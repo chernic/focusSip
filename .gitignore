@@ -1,3 +1,14 @@
+# vs2008 not me
+# =========================
+Debug
+Released
+*.suo
+*_i.c
+*_i.h
+*_p.c
+*.user
+
+
 # Compiled Object files
 *.slo
 *.lo
