@@ -1,6 +1,6 @@
-; transparentAtlWin.def : 定义模块参数。
+; tinyAtlWin.def : 定义模块参数。
 
-LIBRARY      "transparentAtlWin.DLL"
+LIBRARY      "tinyAtlWin.DLL"
 
 EXPORTS
 	DllCanUnloadNow		PRIVATE

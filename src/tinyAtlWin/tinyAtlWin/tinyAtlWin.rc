@@ -40,7 +40,7 @@ END
 
 3 TEXTINCLUDE  
 BEGIN
-    "1 TYPELIB ""transparentAtlWin.tlb""\r\n"
+    "1 TYPELIB ""tinyAtlWin.tlb""\r\n"
     "\0"
 END
 
@@ -73,8 +73,8 @@ BEGIN
             VALUE "FileDescription", "TODO: <文件说明>"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
-            VALUE "InternalName", "transparentAtlWin.dll"
-            VALUE "OriginalFilename", "transparentAtlWin.dll"
+            VALUE "InternalName", "tinyAtlWin.dll"
+            VALUE "OriginalFilename", "tinyAtlWin.dll"
             VALUE "ProductName", "TODO: <产品名>"
             VALUE "ProductVersion", "1.0.0.1"
             VALUE "OLESelfRegister", ""
@@ -95,10 +95,10 @@ END
 
 STRINGTABLE
 BEGIN
-	IDS_PROJNAME					"transparentAtlWin"
+	IDS_PROJNAME					"tinyAtlWin"
 END
 
-IDR_TRANSPARENTATLWIN REGISTRY "transparentAtlWin.rgs"
+IDR_TINYATLWIN REGISTRY "tinyAtlWin.rgs"
 ////////////////////////////////////////////////////////////////////////////
 
 
@@ -109,7 +109,7 @@ IDR_TRANSPARENTATLWIN REGISTRY "transparentAtlWin.rgs"
 //
 // 从 TEXTINCLUDE 3 资源生成。
 //
-1 TYPELIB "transparentAtlWin.tlb"
+1 TYPELIB "tinyAtlWin.tlb"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // 不是 APSTUDIO_INVOKED
 

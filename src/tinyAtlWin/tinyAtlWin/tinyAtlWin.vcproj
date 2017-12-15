@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="transparentAtlWin"
-	ProjectGUID="{1BCBD9FA-C32E-48A1-A9B1-4431FF87DB8D}"
+	Name="tinyAtlWin"
+	ProjectGUID="{630DAE13-7705-4A27-9FD3-358D4CCD8021}"
 	Keyword="AtlProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -42,11 +42,11 @@
 				MkTypLibCompatible="false"
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/transparentAtlWin.tlb"
-				HeaderFileName="transparentAtlWin_i.h"
+				TypeLibraryName="$(IntDir)/tinyAtlWin.tlb"
+				HeaderFileName="tinyAtlWin_i.h"
 				DLLDataFileName=""
-				InterfaceIdentifierFileName="transparentAtlWin_i.c"
-				ProxyFileName="transparentAtlWin_p.c"
+				InterfaceIdentifierFileName="tinyAtlWin_i.c"
+				ProxyFileName="tinyAtlWin_p.c"
 				ValidateParameters="true"
 			/>
 			<Tool
@@ -78,7 +78,7 @@
 				IgnoreImportLibrary="true"
 				AdditionalDependencies=" comsvcs.lib"
 				LinkIncremental="2"
-				ModuleDefinitionFile=".\transparentAtlWin.def"
+				ModuleDefinitionFile=".\tinyAtlWin.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -132,11 +132,11 @@
 				MkTypLibCompatible="false"
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/transparentAtlWin.tlb"
-				HeaderFileName="transparentAtlWin_i.h"
+				TypeLibraryName="$(IntDir)/tinyAtlWin.tlb"
+				HeaderFileName="tinyAtlWin_i.h"
 				DLLDataFileName=""
-				InterfaceIdentifierFileName="transparentAtlWin_i.c"
-				ProxyFileName="transparentAtlWin_p.c"
+				InterfaceIdentifierFileName="tinyAtlWin_i.c"
+				ProxyFileName="tinyAtlWin_p.c"
 				ValidateParameters="true"
 			/>
 			<Tool
@@ -166,7 +166,7 @@
 				IgnoreImportLibrary="true"
 				AdditionalDependencies=" comsvcs.lib"
 				LinkIncremental="1"
-				ModuleDefinitionFile=".\transparentAtlWin.def"
+				ModuleDefinitionFile=".\tinyAtlWin.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -251,15 +251,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\transparentAtlWin.cpp"
+				RelativePath=".\tinyAtlWin.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\transparentAtlWin.def"
+				RelativePath=".\tinyAtlWin.def"
 				>
 			</File>
 			<File
-				RelativePath=".\transparentAtlWin.idl"
+				RelativePath=".\tinyAtlWin.idl"
 				>
 			</File>
 		</Filter>
@@ -295,11 +295,11 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\transparentAtlWin.rc"
+				RelativePath=".\tinyAtlWin.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\transparentAtlWin.rgs"
+				RelativePath=".\tinyAtlWin.rgs"
 				>
 			</File>
 		</Filter>
@@ -308,7 +308,7 @@
 			SourceControlFiles="false"
 			>
 			<File
-				RelativePath=".\transparentAtlWin_i.c"
+				RelativePath=".\tinyAtlWin_i.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -330,7 +330,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\transparentAtlWin_i.h"
+				RelativePath=".\tinyAtlWin_i.h"
 				>
 			</File>
 		</Filter>

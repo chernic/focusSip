@@ -1,8 +1,8 @@
-// transparentAtlWin.idl : transparentAtlWin 的 IDL 源
+// tinyAtlWin.idl : tinyAtlWin 的 IDL 源
 //
 
 // 此文件将由 MIDL 工具处理以
-// 产生类型库(transparentAtlWin.tlb)和封送处理代码。
+// 产生类型库(tinyAtlWin.tlb)和封送处理代码。
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -25,17 +25,17 @@ interface IComponentRegistrar : IDispatch
 };
 
 [
-	uuid(BDDF5F9D-40E2-4644-B7C8-52675C881591),
+	uuid(31BC3635-9845-4C31-B140-2ADB73A39883),
 	version(1.0),
-	helpstring("transparentAtlWin 1.0 类型库"),
-	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{C6567838-1E8D-4325-8293-07AE86E3E367}")
+	helpstring("tinyAtlWin 1.0 类型库"),
+	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{53771816-FD4C-4FA9-996C-939EDB0FD1E9}")
 ]
-library transparentAtlWinLib
+library tinyAtlWinLib
 {
 	importlib("stdole2.tlb");
 
 	[
-		uuid(C6567838-1E8D-4325-8293-07AE86E3E367),
+		uuid(53771816-FD4C-4FA9-996C-939EDB0FD1E9),
 		helpstring("ComponentRegistrar 类")
 	]
 	coclass CompReg

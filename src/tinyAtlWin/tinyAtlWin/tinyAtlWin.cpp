@@ -1,4 +1,4 @@
-// transparentAtlWin.cpp : DLL 导出的实现。
+// tinyAtlWin.cpp : DLL 导出的实现。
 
 //
 // 注意: COM+ 1.0 信息:
@@ -7,7 +7,7 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include "transparentAtlWin_i.h"
+#include "tinyAtlWin_i.h"
 #include "dllmain.h"
 #include "compreg.h"
 

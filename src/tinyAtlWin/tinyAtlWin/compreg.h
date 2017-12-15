@@ -3,5 +3,5 @@
 #pragma once
 
 #include "resource.h"       // Ö÷·ûºÅ
-#include "transparentAtlWin_i.h"
+#include "tinyAtlWin_i.h"
  

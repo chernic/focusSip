@@ -1,10 +1,10 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by transparentAtlWin.rc
+// Used by tinyAtlWin.rc
 //
 
 #define IDS_PROJNAME                    100
-#define IDR_TRANSPARENTATLWIN	101
+#define IDR_TINYATLWIN	101
 
 // 新对象的下一组默认值
 //
