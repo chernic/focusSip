@@ -1,0 +1,22 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'transparentAtlWin'
+		'transparentAtlWin.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {C6567838-1E8D-4325-8293-07AE86E3E367} = s 'CompReg Class'
+		{
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{BDDF5F9D-40E2-4644-B7C8-52675C881591}'
+		}
+	}
+}
