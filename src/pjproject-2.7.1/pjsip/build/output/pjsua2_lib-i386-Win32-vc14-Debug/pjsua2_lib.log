@@ -1,0 +1,12 @@
+﻿  account.cpp
+  call.cpp
+  endpoint.cpp
+..\src\pjsua2\endpoint.cpp(1084): warning C4800: “pj_bool_t”: 将值强制为布尔值“true”或“false”(性能警告)
+  json.cpp
+  media.cpp
+  persistent.cpp
+  presence.cpp
+  siptypes.cpp
+  types.cpp
+  正在生成代码...
+  pjsua2_lib.vcxproj -> F:\PJSIP\video\pjproject-2.7.1\pjsip\build\..\lib\pjsua2-lib-i386-Win32-vc14-Debug.lib
