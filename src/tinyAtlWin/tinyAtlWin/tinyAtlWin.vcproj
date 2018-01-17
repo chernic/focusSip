@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="tinyAtlWin"
 	ProjectGUID="{630DAE13-7705-4A27-9FD3-358D4CCD8021}"
+	RootNamespace="tinyAtlWin"
 	Keyword="AtlProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -205,7 +206,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Complex.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\compreg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dh_window_bg_brush_helper.cpp"
 				>
 			</File>
 			<File
@@ -229,6 +238,10 @@
 						CompileAsManaged="0"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\noneWin.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
@@ -269,11 +282,27 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\_InoneWinEvents_CP.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Complex.h"
+				>
+			</File>
+			<File
 				RelativePath=".\compreg.h"
 				>
 			</File>
 			<File
+				RelativePath=".\dh_window_bg_brush_helper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dllmain.h"
+				>
+			</File>
+			<File
+				RelativePath=".\noneWin.h"
 				>
 			</File>
 			<File
@@ -294,6 +323,14 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\noneWin.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\noneWin.rgs"
+				>
+			</File>
 			<File
 				RelativePath=".\tinyAtlWin.rc"
 				>
@@ -334,6 +371,11 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\noneWin.htm"
+			DeploymentContent="true"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

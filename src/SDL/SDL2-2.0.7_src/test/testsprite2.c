@@ -154,7 +154,7 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     SDL_RenderClear(renderer);
 
     /* Test points */
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderDrawPoint(renderer, 0, 0);
     SDL_RenderDrawPoint(renderer, viewport.w-1, 0);
     SDL_RenderDrawPoint(renderer, 0, viewport.h-1);
@@ -173,13 +173,15 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     temp.y = 1;
     temp.w = sprite_w;
     temp.h = sprite_h;
+    // 设置纹理区底色为白色
     SDL_RenderFillRect(renderer, &temp);
+    // 设置纹理区图案
     SDL_RenderCopy(renderer, sprite, NULL, &temp);
     temp.x = viewport.w-sprite_w-1;
     temp.y = 1;
     temp.w = sprite_w;
     temp.h = sprite_h;
-    SDL_RenderFillRect(renderer, &temp);
+    //SDL_RenderFillRect(renderer, &temp);
     SDL_RenderCopy(renderer, sprite, NULL, &temp);
     temp.x = 1;
     temp.y = viewport.h-sprite_h-1;

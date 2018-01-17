@@ -13,9 +13,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * along with this program; if not, write to the Free Spjsua_calloftware
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 #include <pjsua-lib/pjsua.h>
 #include <pjsua-lib/pjsua_internal.h>
 
@@ -541,14 +542,14 @@ PJ_DEF(void) pjsua_vid_win_reset(pjsua_vid_win_id wid){
  * - If the type is stream, only renderer will be created.
  */
 static pj_status_t  create_vid_win(
-    pjsua_vid_win_type type,
-    const pjmedia_format *fmt,
-    pjmedia_vid_dev_index rend_id,
-    pjmedia_vid_dev_index cap_id,
-    pj_bool_t show,
-    unsigned wnd_flags,
-    const pjmedia_vid_dev_hwnd *wnd,
-    pjsua_vid_win_id *id){
+        pjsua_vid_win_type type,
+        const pjmedia_format *fmt,
+        pjmedia_vid_dev_index rend_id,
+        pjmedia_vid_dev_index cap_id,
+        pj_bool_t show,
+        unsigned wnd_flags,
+        const pjmedia_vid_dev_hwnd *wnd,
+        pjsua_vid_win_id *id){
     pj_bool_t enable_native_preview;
     pjsua_vid_win_id wid = PJSUA_INVALID_ID;
     pjsua_vid_win *w = NULL;
@@ -835,27 +836,29 @@ static void         dec_vid_win(pjsua_vid_win_id wid){
     free_vid_win(wid);
 }
 
-//@@@@@@@
+//@@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@
 /* Initialize video call media */
-pj_status_t         pjsua_vid_channel_init(pjsua_call_media *call_med){
+pj_status_t         pjsua_vid_channel_init(
+        pjsua_call_media *call_med){
     pjsua_acc *acc = &pjsua_var.acc[call_med->call->acc_id];
 
     call_med->strm.v.rdr_dev = acc->cfg.vid_rend_dev;
     call_med->strm.v.cap_dev = acc->cfg.vid_cap_dev;
     if (call_med->strm.v.rdr_dev == PJMEDIA_VID_DEFAULT_RENDER_DEV) {
-    pjmedia_vid_dev_info info;
-    pjmedia_vid_dev_get_info(call_med->strm.v.rdr_dev, &info);
-    call_med->strm.v.rdr_dev = info.id;
+        pjmedia_vid_dev_info info;
+        pjmedia_vid_dev_get_info(call_med->strm.v.rdr_dev, &info);
+        call_med->strm.v.rdr_dev = info.id;
     }
     if (call_med->strm.v.cap_dev == PJMEDIA_VID_DEFAULT_CAPTURE_DEV) {
-    pjmedia_vid_dev_info info;
-    pjmedia_vid_dev_get_info(call_med->strm.v.cap_dev, &info);
-    call_med->strm.v.cap_dev = info.id;
+        pjmedia_vid_dev_info info;
+        pjmedia_vid_dev_get_info(call_med->strm.v.cap_dev, &info);
+        call_med->strm.v.cap_dev = info.id;
     }
 
     return PJ_SUCCESS;
 }
 
+//@@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@ @@@@@@@
 /* Internal function: update video channel after SDP negotiation.
  * Warning: do not use temporary/flip-flop pool, e.g: inv->pool_prov,
  *          for creating stream, etc, as after SDP negotiation and when
@@ -866,24 +869,23 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
         pj_pool_t                   *tmp_pool,
         pjmedia_vid_stream_info     *si,
         const pjmedia_sdp_session   *local_sdp,
-        const pjmedia_sdp_session   *remote_sdp)
-{
+        const pjmedia_sdp_session   *remote_sdp){
     pjmedia_port     *media_port;
     pjsua_vid_win_id wid_p;
     pj_status_t      status;
     pjsua_call       *call     = cm->call;
-    pjsua_acc        *acc      = &pjsua_var.acc[call->acc_id];
-    si->rtcp_sdes_bye_disabled = pjsua_var.media_cfg.no_rtcp_sdes_bye; // <==
+    pjsua_acc         *acc     = &pjsua_var.acc[call->acc_id];
+    si->rtcp_sdes_bye_disabled = pjsua_var.media_cfg.no_rtcp_sdes_bye;
 
     PJ_UNUSED_ARG(tmp_pool);
-    PJ_UNUSED_ARG(local_sdp);
     PJ_UNUSED_ARG(remote_sdp);
+    PJ_UNUSED_ARG(local_sdp);
     PJ_LOG(4, (THIS_FILE, "Video channel update..") );
     pj_log_push_indent();
 
-    // 检查是否有媒体在活动
+    // 检查是否有媒体在活动 
     if (si->dir != PJMEDIA_DIR_NONE) {
-        // 此处可添加额外的媒体流设置, 
+        // 此处可添加额外的媒体流设置,
         // 例如抖动缓冲器参数jitter buffer/编码ptime
         /// Chernic : See Wiz-VOIP-jitter buffer
         /// Chernic : See Wiz-VOIP-ptime
@@ -891,6 +893,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
         si->jb_min_pre      = pjsua_var.media_cfg.jb_min_pre;
         si->jb_max_pre      = pjsua_var.media_cfg.jb_max_pre;
         si->jb_max          = pjsua_var.media_cfg.jb_max;
+
         // 同步源标示符(SSRC)
         /// Chernic : See Wiz-VOIP-SSRC
         si->ssrc            = cm->ssrc;
@@ -899,6 +902,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
         si->rtp_ts          = cm->rtp_tx_ts;
         si->rtp_seq         = cm->rtp_tx_seq;
         si->rtp_seq_ts_set  = cm->rtp_tx_seq_ts_set;
+
         // Set rate control config from account setting
         /// Chernic : See Wiz-VOIP-rate control
         si->rc_cfg          = acc->cfg.vid_stream_rc_cfg;
@@ -929,7 +933,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
             /* Find matched format ID */
             for (i = 0; i < codec_info->dec_fmt_id_cnt; ++i) {
                 for (j = 0; j < dev_info.fmt_cnt; ++j) {
-                    if (codec_info->dec_fmt_id[i] ==(pjmedia_format_id)dev_info.fmt[j].id){
+                    if (codec_info->dec_fmt_id[i] == (pjmedia_format_id)dev_info.fmt[j].id){
                         /* Apply the matched format ID to the codec */
                         si->codec_param->dec_fmt.id = codec_info->dec_fmt_id[i];
 
@@ -942,7 +946,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
         }
 
         // Create session based on session info.
-        /// >>> cm->strm.v.stream 
+        /// >>> cm->strm.v.stream
         status = pjmedia_vid_stream_create(pjsua_var.med_endpt, NULL,si,cm->tp,NULL,&cm->strm.v.stream);
         if (status != PJ_SUCCESS){
             goto on_error;
@@ -963,15 +967,12 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
         ////////////////////////////////////////////
         // S-3 : Setup decoding direction
         if (si->dir & PJMEDIA_DIR_DECODING){
-            // acc->cfg
             pjsua_vid_win *w;
             pjsua_vid_win_id wid;
             // pj_bool_t just_created = PJ_FALSE;
             PJ_LOG(4,(THIS_FILE, "Setting up RX.."));
             pj_log_push_indent();
-
-            // (acc->cfg);
-
+            
             //S-2 :
             status = pjmedia_vid_stream_get_port( // ABChernic : @@@@@@@
                 cm->strm.v.stream,
@@ -1061,9 +1062,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
 
         //////////////////////////////////////////////
         // P-3 :Setup encoding direction
-        if (si->dir & PJMEDIA_DIR_ENCODING
-            && !call->local_hold)
-        {
+        if (si->dir & PJMEDIA_DIR_ENCODING && !call->local_hold){
             pjsua_acc *acc_enc;
             pjsua_vid_win *w;
             pjsua_vid_win_id wid;
@@ -1157,6 +1156,7 @@ pj_status_t pjsua_vid_channel_update(pjsua_call_media *cm,
 
             //P08 : inc_vid_win
             //w->stream_running = PJ_TRUE;
+
             cm->strm.v.cap_win_id = wid;
             pj_log_pop_indent();
         }

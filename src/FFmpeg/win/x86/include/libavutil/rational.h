@@ -1,3 +1,4 @@
+// ABChernic : ÐÞ¸ÄÁËÄ³Ð©Ç¿ÖÆÀàÐÍ×ª»»
 /*
  * rational numbers
  * Copyright (c) 2003 Michael Niedermayer <michaelni@gmx.at>
@@ -46,7 +47,7 @@
  * denominators.
  *
  * Many of the functions that operate on AVRational's have the suffix `_q`, in
- * reference to the mathematical symbol "â„š" (Q) which denotes the set of all
+ * reference to the mathematical symbol "?" (Q) which denotes the set of all
  * rational numbers.
  *
  * @{

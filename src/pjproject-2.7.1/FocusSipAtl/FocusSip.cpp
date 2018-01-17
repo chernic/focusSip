@@ -147,8 +147,8 @@ void setComplexFrameRect(void){
   cxMax = GetSystemMetrics(SM_CXSCREEN); 
   cyMax = GetSystemMetrics(SM_CYSCREEN); 
 
-  cXset = cxMax/3;
-  cYset = cxMax/3;
+  cXset = 640;
+  cYset = 480;
 
   // 这里是上下左右
   ComplexFrameRect.rcMax    = setRECT(0,        0, cxMax,     cyMax);
@@ -546,31 +546,11 @@ static void on_call_media_state(pjsua_call_id call_id){
   }
 
 #ifdef _GLOBAL_VIDEO
-    /*
-     * Hangup
-       */
-    if(!pHangup)  
-      pHangup = new CHangup();
-    pHangup->ShowWindow(SW_SHOW);
+    ResizeStreamWindow ( ComplexFrameRect.psStream );
+    ResizePreviewWindow( ComplexFrameRect.psPreview);
 
-    /*
-     * Complex
-       */
-    if(!pComplex) 
-      pComplex = new CComplex();
-    pComplex->ShowWindow(SW_SHOW);
-
-    /*
-     * View
-     */
-    AddStreamToWindow ( ComplexFrameRect.psStream );
-    SetStreamParent (pComplex->m_hWnd);
     ShowStreamWindow(PJ_TRUE);
-    
-    AddPreviewToWindow( ComplexFrameRect.psPreview);
-    SetPreviewParent(pComplex->m_hWnd);
     ShowPreviewWindow(PJ_TRUE);
-    // 最后显示 Preview以使其获得焦点
 #endif
 }
 //////////////////////////////////////////////////////////////////
@@ -740,7 +720,7 @@ STDMETHODIMP CFocusSip::focusua_app_test_config(BSTR *retmsg){
 }
 // FocusSip 11
 STDMETHODIMP CFocusSip::focusua_init(Pj_Status *retStatus){
-    //pageContacts->isSubscribed = FALSE;CreateAddPreviewToWindow
+    //pageContacts->isSubscribed = FALSE;CreateResizePreviewWindow
     //player_id = PJSUA_INVALID_ID;
     // check updates
   if(!pj_inited){
@@ -773,7 +753,7 @@ STDMETHODIMP CFocusSip::focusua_init(Pj_Status *retStatus){
     ua_cfg.cb.on_call_state             =   &on_call_state;     //CC
     ua_cfg.cb.on_dtmf_digit             =   &on_dtmf_digit;
     ua_cfg.cb.on_call_tsx_state         =   &on_call_tsx_state;
-          
+
     ua_cfg.cb.on_call_media_state       =   &on_call_media_state;
     ua_cfg.cb.on_incoming_call          =   &on_incoming_call;  //CC
     ua_cfg.cb.on_nat_detect             =   &on_nat_detect;
@@ -1255,44 +1235,11 @@ STDMETHODIMP CFocusSip::focusua_call_make_call(
     }
     
 #ifdef _GLOBAL_VIDEO
-    if (hasVideo) {
     setComplexFrameRect();
     ResetPJmediaData();
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // 这里不会立刻执行显示效果, 最好开线程来执行
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /*
-     * Complex
-       */
-    if(!pComplex) 
-      pComplex = new CComplex(); 
-    // 最先显示背景
-    pComplex->SetComplexWindow( ComplexFrameRect.rcMax);
-
-    /*
-     * Hangup
-       */
-    if(!pHangup)  
-      pHangup = new CHangup();
-    pHangup->SetHangupWindow( ComplexFrameRect.rcHangup );
-    ::SetParent(pHangup->m_hWnd, pComplex->m_hWnd);
-    pHangup->ShowWindow(SW_SHOW);
-
-    pComplex->ShowWindow(SW_SHOW);
-
-    /*
-     * View
-       */
-    //
-    HWND hWnd = pComplex->m_hWnd;
-    CreateAddPreviewToWindow( ComplexFrameRect.psPreview, (void *) hWnd );
-    SetPreviewParent(pComplex->m_hWnd);
-    
+    CreatePreviewWindow( ComplexFrameRect.psPreview );
     ShowPreviewWindow(PJ_TRUE);
-
-    }
-
 #endif
 
     SetSoundDevice(g_audio_output);

@@ -29,15 +29,13 @@ int done;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
-quit(int rc)
-{
+quit(int rc){
     SDL_Quit();
     exit(rc);
 }
 
 static void
-print_string(char **text, size_t *maxlen, const char *fmt, ...)
-{
+print_string(char **text, size_t *maxlen, const char *fmt, ...){
     int len;
     va_list ap;
 
@@ -55,8 +53,7 @@ print_string(char **text, size_t *maxlen, const char *fmt, ...)
 }
 
 static void
-print_modifiers(char **text, size_t *maxlen)
-{
+print_modifiers(char **text, size_t *maxlen){
     int mod;
     print_string(text, maxlen, " modifiers:");
     mod = SDL_GetModState();
@@ -89,8 +86,7 @@ print_modifiers(char **text, size_t *maxlen)
 }
 
 static void
-PrintModifierState()
-{
+PrintModifierState(){
     char message[512];
     char *spot;
     size_t left;
@@ -103,8 +99,7 @@ PrintModifierState()
 }
 
 static void
-PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat)
-{
+PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat){
     char message[512];
     char *spot;
     size_t left;
@@ -135,8 +130,7 @@ PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat)
 }
 
 static void
-PrintText(char *eventtype, char *text)
-{
+PrintText(char *eventtype, char *text){
     char *spot, expanded[1024];
 
     expanded[0] = '\0';
@@ -149,9 +143,8 @@ PrintText(char *eventtype, char *text)
 }
 
 void
-loop()
-{
-    SDL_Event event;
+loop(){
+    SDL_Event event  = NULL;
     /* Check for events */
     /*SDL_WaitEvent(&event); emscripten does not like waiting*/
 
@@ -196,8 +189,7 @@ loop()
 }
 
 int
-main(int argc, char *argv[])
-{
+main(int argc, char *argv[]){
     SDL_Window *window;
 
     /* Enable standard application logging */

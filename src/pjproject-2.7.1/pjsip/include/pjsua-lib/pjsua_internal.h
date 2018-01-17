@@ -121,84 +121,68 @@ typedef struct call_answer
  */
 struct pjsua_call
 {
-    unsigned		 index;	    /**< Index in pjsua array.		    */
-    pjsua_call_setting	 opt;	    /**< Call setting.			    */
-    pj_bool_t		 opt_inited;/**< Initial call setting has been set,
-					 to avoid different opt in answer.  */
-    pjsip_inv_session	*inv;	    /**< The invite session.		    */
-    void		*user_data; /**< User/application data.		    */
-    pjsip_status_code	 last_code; /**< Last status code seen.		    */
-    pj_str_t		 last_text; /**< Last status text seen.		    */
-    pj_time_val		 start_time;/**< First INVITE sent/received.	    */
-    pj_time_val		 res_time;  /**< First response sent/received.	    */
-    pj_time_val		 conn_time; /**< Connected/confirmed time.	    */
-    pj_time_val		 dis_time;  /**< Disconnect time.		    */
-    pjsua_acc_id	 acc_id;    /**< Account index being used.	    */
-    int			 secure_level;/**< Signaling security level.	    */
-    pjsua_call_hold_type call_hold_type; /**< How to do call hold.	    */
-    pj_bool_t		 local_hold;/**< Flag for call-hold by local.	    */
-    void		*hold_msg;  /**< Outgoing hold tx_data.		    */
-
-    unsigned		 med_cnt;   /**< Number of media in SDP.	    */
-    pjsua_call_media     media[PJSUA_MAX_CALL_MEDIA]; /**< Array of media   */
-    unsigned		 med_prov_cnt;/**< Number of provisional media.	    */
-    pjsua_call_media	 media_prov[PJSUA_MAX_CALL_MEDIA];
-				    /**< Array of provisional media.	    */
-    pj_bool_t		 med_update_success;
-    				    /**< Is media update successful?	    */
-    pj_bool_t		 hanging_up;/**< Is call in the process of hangup?  */
-
-    int			 audio_idx; /**< First active audio media.	    */
-    pj_mutex_t          *med_ch_mutex;/**< Media channel callback's mutex.  */
-    pjsua_med_tp_state_cb   med_ch_cb;/**< Media channel callback.	    */
-    pjsua_med_tp_state_info med_ch_info;/**< Media channel info.            */
-
-    pjsip_evsub		*xfer_sub;  /**< Xfer server subscription, if this
-					 call was triggered by xfer.	    */
-    pj_stun_nat_type	 rem_nat_type; /**< NAT type of remote endpoint.    */
-
-    char    last_text_buf_[128];    /**< Buffer for last_text.		    */
-
+    unsigned		 index;									/**< Index in pjsua array.		    */
+    pjsua_call_setting	 opt;								/**< Call setting.			    */
+    pj_bool_t		 opt_inited;							/**< Initial call setting has been set,to avoid different opt in answer.  */
+    pjsip_inv_session	*inv;								/**< The invite session.		    */
+    void		*user_data;									/**< User/application data.		    */
+    pjsip_status_code	 last_code;							/**< Last status code seen.		    */
+    pj_str_t		 last_text;								/**< Last status text seen.		    */
+    pj_time_val		 start_time;							/**< First INVITE sent/received.	    */
+    pj_time_val		 res_time;								/**< First response sent/received.	    */
+    pj_time_val		 conn_time;								/**< Connected/confirmed time.	    */
+    pj_time_val		 dis_time;								/**< Disconnect time.		    */
+    pjsua_acc_id	 acc_id;								/**< Account index being used.	    */
+    int			 secure_level;								/**< Signaling security level.	    */
+    pjsua_call_hold_type call_hold_type;					/**< How to do call hold.	    */
+    pj_bool_t		 local_hold;							/**< Flag for call-hold by local.	    */
+    void		*hold_msg;									/**< Outgoing hold tx_data.		    */
+    unsigned		 med_cnt;								/**< Number of media in SDP.	    */
+    pjsua_call_media     media[PJSUA_MAX_CALL_MEDIA];		/**< Array of media   */
+    unsigned		 med_prov_cnt;							/**< Number of provisional media.	    */
+    pjsua_call_media	 media_prov[PJSUA_MAX_CALL_MEDIA];	/**< Array of provisional media.	    */
+    pj_bool_t		 med_update_success;					/**< Is media update successful?	    */
+    pj_bool_t		 hanging_up;							/**< Is call in the process of hangup?  */
+    int			 audio_idx;									/**< First active audio media.	    */
+    pj_mutex_t          *med_ch_mutex;						/**< Media channel callback's mutex.  */
+    pjsua_med_tp_state_cb   med_ch_cb;						/**< Media channel callback.	    */
+    pjsua_med_tp_state_info med_ch_info;					/**< Media channel info.            */
+    pjsip_evsub		*xfer_sub;								/**< Xfer server subscription, if thiscall was triggered by xfer.	    */
+    pj_stun_nat_type	 rem_nat_type;						/**< NAT type of remote endpoint.    */
+    char    last_text_buf_[128];							/**< Buffer for last_text.		    */
     struct {
-	int		 retry_cnt;  /**< Retry count.			    */
-    } lock_codec;		     /**< Data for codec locking when answer
-					  contains multiple codecs.	    */
-
+	int		 retry_cnt;										/**< Retry count.			    */
+    } lock_codec;											/**< Data for codec locking when answercontains multiple codecs.	    */
     struct {
-        pjsip_dialog        *dlg;    /**< Call dialog.                      */
-        pjmedia_sdp_session *rem_sdp;/**< Remote SDP.                       */
-        pj_pool_t           *pool_prov;/**< Provisional pool.               */
-        pj_bool_t            med_ch_deinit;/**< Media channel de-init-ed?   */
+        pjsip_dialog        *dlg;							/**< Call dialog.                      */
+        pjmedia_sdp_session *rem_sdp;						/**< Remote SDP.                       */
+        pj_pool_t           *pool_prov;						/**< Provisional pool.               */
+        pj_bool_t            med_ch_deinit;					/**< Media channel de-init-ed?   */
         union {
             struct {
-                pjsua_msg_data  *msg_data;/**< Headers for outgoing INVITE. */
-                pj_bool_t        hangup;  /**< Call is hangup?              */
+                pjsua_msg_data  *msg_data;					/**< Headers for outgoing INVITE. */
+                pj_bool_t        hangup;					/**< Call is hangup?              */
             } out_call;
             struct {		
-                call_answer      answers;/**< A list of call answers.       */
-		pj_bool_t	 hangup;/**< Call is hangup?		    */
-		pjsip_dialog	*replaced_dlg; /**< Replaced dialog.	    */
+                call_answer      answers;					/**< A list of call answers.       */
+		pj_bool_t	 hangup;								/**< Call is hangup?		    */
+		pjsip_dialog	*replaced_dlg;						/**< Replaced dialog.	    */
             } inc_call;
         } call_var;
-    } async_call;                      /**< Temporary storage for async
-                                            outgoing/incoming call.         */
-
-    pj_bool_t		 rem_offerer;  /**< Was remote SDP offerer?	    */
-    unsigned		 rem_aud_cnt;  /**< No of active audio in last remote
-					    offer.			    */
-    unsigned		 rem_vid_cnt;  /**< No of active video in last remote
-					    offer.			    */
-    
-    pj_timer_entry	 reinv_timer;  /**< Reinvite retry timer.	    */
-    pj_bool_t	 	 reinv_pending;/**< Pending until CONFIRMED state.  */
-    pj_bool_t	 	 reinv_ice_sent;/**< Has reinvite for ICE upd sent? */
-    pjsip_rx_data	*incoming_data;/**< Cloned incoming call rdata.
-				            On pjsua2, when handling incoming 
-					    call, onCreateMediaTransport() will
-					    not be called since the call isn't
-					    created yet. This temporary 
-					    variable is used to handle such 
-					    case, see ticket #1916.	    */
+    } async_call;											/**< Temporary storage for asyncoutgoing/incoming call.         */
+    pj_bool_t		 rem_offerer;							/**< Was remote SDP offerer?	    */
+    unsigned		 rem_aud_cnt;							/**< No of active audio in last remote offer.			    */
+    unsigned		 rem_vid_cnt;							/**< No of active video in last remoteoffer.			    */
+    pj_timer_entry	 reinv_timer;							/**< Reinvite retry timer.	    */
+    pj_bool_t	 	 reinv_pending;							/**< Pending until CONFIRMED state.  */
+    pj_bool_t	 	 reinv_ice_sent;						/**< Has reinvite for ICE upd sent? */
+    pjsip_rx_data	*incoming_data;							/**< Cloned incoming call rdata.
+																On pjsua2, when handling incoming 
+															call, onCreateMediaTransport() will
+															not be called since the call isn't
+															created yet. This temporary 
+															variable is used to handle such 
+															case, see ticket #1916.	    */
 };
 
 
@@ -220,74 +204,52 @@ struct pjsua_srv_pres
  */
 typedef struct pjsua_acc
 {
-    pj_pool_t	    *pool;	    /**< Pool for this account.		*/
-    pjsua_acc_config cfg;	    /**< Account configuration.		*/
-    pj_bool_t	     valid;	    /**< Is this account valid?		*/
-
-    int		     index;	    /**< Index in accounts array.	*/
-    pj_str_t	     display;	    /**< Display name, if any.		*/
-    pj_str_t	     user_part;	    /**< User part of local URI.	*/
-    pj_bool_t	     is_sips;	    /**< Local URI uses "sips"?		*/
-    pj_str_t	     contact;	    /**< Our Contact header.		*/
-    pj_str_t         reg_contact;   /**< Contact header for REGISTER.
-				         It may be different than acc
-				         contact if outbound is used    */
-    pj_bool_t	     contact_rewritten;
-				    /**< Contact rewrite has been done? */
-    pjsip_host_port  via_addr;      /**< Address for Via header         */
-    pjsip_transport *via_tp;        /**< Transport associated with
-                                         the Via address                */
-
-    pj_str_t	     srv_domain;    /**< Host part of reg server.	*/
-    int		     srv_port;	    /**< Port number of reg server.	*/
-
-    pjsip_regc	    *regc;	    /**< Client registration session.   */
-    pj_status_t	     reg_last_err;  /**< Last registration error.	*/
-    int		     reg_last_code; /**< Last status last register.	*/
-
-    pj_str_t         reg_mapped_addr;/**< Our addr as seen by reg srv.
-                                          Only if allow_sdp_nat_rewrite
-                                          is set                        */
-
+    pj_pool_t	    *pool;				/**< Pool for this account.		*/
+    pjsua_acc_config cfg;				/**< Account configuration.		*/
+    pj_bool_t	     valid;				/**< Is this account valid?		*/
+    int		     index;					/**< Index in accounts array.	*/
+    pj_str_t	     display;			/**< Display name, if any.		*/
+    pj_str_t	     user_part;			/**< User part of local URI.	*/
+    pj_bool_t	     is_sips;			/**< Local URI uses "sips"?		*/
+    pj_str_t	     contact;			/**< Our Contact header.		*/
+    pj_str_t         reg_contact;		/**< Contact header for REGISTER. It may be different than acc contact if outbound is used */
+    pj_bool_t	     contact_rewritten; /**< Contact rewrite has been done? */
+    pjsip_host_port  via_addr;			/**< Address for Via header         */
+    pjsip_transport *via_tp;			/**< Transport associated with the Via address */
+    pj_str_t	     srv_domain;		/**< Host part of reg server.	*/
+    int		     srv_port;				/**< Port number of reg server.	*/
+    pjsip_regc	    *regc;				/**< Client registration session.   */
+    pj_status_t	     reg_last_err;		/**< Last registration error.	*/
+    int		     reg_last_code;			/**< Last status last register.	*/
+    pj_str_t         reg_mapped_addr;	/**< Our addr as seen by reg srv. Only if allow_sdp_nat_rewriteis set */
     struct {
-	pj_bool_t	 active;    /**< Flag of reregister status.	*/
-	pj_timer_entry   timer;	    /**< Timer for reregistration.	*/
-	void		*reg_tp;    /**< Transport for registration.	*/
-	unsigned	 attempt_cnt; /**< Attempt counter.		*/
-    } auto_rereg;		    /**< Reregister/reconnect data.	*/
-
-    pj_timer_entry   ka_timer;	    /**< Keep-alive timer for UDP.	*/
-    pjsip_transport *ka_transport;  /**< Transport for keep-alive.	*/
-    pj_sockaddr	     ka_target;	    /**< Destination address for K-A	*/
-    unsigned	     ka_target_len; /**< Length of ka_target.		*/
-
-    pjsip_route_hdr  route_set;	    /**< Complete route set inc. outbnd.*/
-    pj_uint32_t	     global_route_crc; /** CRC of global route setting. */
-    pj_uint32_t	     local_route_crc;  /** CRC of account route setting.*/
-
-    unsigned         rfc5626_status;/**< SIP outbound status:
-                                           0: not used
-                                           1: requested
-                                           2: acknowledged by servers   */
-    pj_str_t	     rfc5626_instprm;/**< SIP outbound instance param.  */
-    pj_str_t         rfc5626_regprm;/**< SIP outbound reg param.        */
-
-    unsigned	     cred_cnt;	    /**< Number of credentials.		*/
+	pj_bool_t	 active;				/**< Flag of reregister status.	*/
+	pj_timer_entry   timer;				/**< Timer for reregistration.	*/
+	void		*reg_tp;				/**< Transport for registration.	*/
+	unsigned	 attempt_cnt;			/**< Attempt counter.		*/
+    } auto_rereg;						/**< Reregister/reconnect data.	*/
+    pj_timer_entry   ka_timer;			/**< Keep-alive timer for UDP.	*/
+    pjsip_transport *ka_transport;		/**< Transport for keep-alive.	*/
+    pj_sockaddr	     ka_target;			/**< Destination address for K-A	*/
+    unsigned	     ka_target_len;		/**< Length of ka_target.		*/
+    pjsip_route_hdr  route_set;			/**< Complete route set inc. outbnd.*/
+    pj_uint32_t	     global_route_crc;	/** CRC of global route setting. */
+    pj_uint32_t	     local_route_crc;	/** CRC of account route setting.*/
+    unsigned         rfc5626_status;	/**< SIP outbound status: 0: not used 1: requested 2: acknowledged by servers   */
+    pj_str_t	     rfc5626_instprm;	/**< SIP outbound instance param.  */
+    pj_str_t         rfc5626_regprm;	/**< SIP outbound reg param.        */
+    unsigned	     cred_cnt;			/**< Number of credentials.		*/
     pjsip_cred_info  cred[PJSUA_ACC_MAX_PROXIES]; /**< Complete creds.	*/
-
-    pj_bool_t	     online_status; /**< Our online status.		*/
-    pjrpid_element   rpid;	    /**< RPID element information.	*/
-    pjsua_srv_pres   pres_srv_list; /**< Server subscription list.	*/
-    pjsip_publishc  *publish_sess;  /**< Client publication session.	*/
-    pj_bool_t	     publish_state; /**< Last published online status	*/
-
-    pjsip_evsub	    *mwi_sub;	    /**< MWI client subscription	*/
-    pjsip_dialog    *mwi_dlg;	    /**< Dialog for MWI sub.		*/
-
-    pj_uint16_t      next_rtp_port; /**< Next RTP port to be used.      */
-    pjsip_transport_type_e tp_type; /**< Transport type (for local acc or
-				         transport binding)		*/
-    pjsua_ip_change_op ip_change_op;/**< IP change process progress.	*/
+    pj_bool_t	     online_status;		/**< Our online status.		*/
+    pjrpid_element   rpid;				/**< RPID element information.	*/
+    pjsua_srv_pres   pres_srv_list;		/**< Server subscription list.	*/
+    pjsip_publishc  *publish_sess;		/**< Client publication session.	*/
+    pj_bool_t	     publish_state;		/**< Last published online status	*/
+    pjsip_evsub	    *mwi_sub;			/**< MWI client subscription	*/
+    pjsip_dialog    *mwi_dlg;			/**< Dialog for MWI sub.		*/
+    pj_uint16_t      next_rtp_port;		/**< Next RTP port to be used.      */
+    pjsip_transport_type_e tp_type;		/**< Transport type (for local acc or transport binding) */
+    pjsua_ip_change_op ip_change_op;	/**< IP change process progress.	*/
 } pjsua_acc;
 
 

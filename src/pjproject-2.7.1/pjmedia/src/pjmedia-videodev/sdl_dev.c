@@ -81,7 +81,7 @@ typedef struct sdl_toolbar_info{
     sdl_button_t mPlay;
     sdl_button_t mClose;
 
-	pjmedia_rect_size size;
+    pjmedia_rect_size size;
 }sdl_toolbar_info_t;
 
 ///////////////////////////////////////////
@@ -199,14 +199,10 @@ struct sdl_factory{
     pj_thread_t         *ev_thread;
 };
 
-/* Video stream. */
-struct sdl_stream{
-    pjmedia_vid_dev_stream  base;           /**< Base stream        */
-    pjmedia_vid_dev_param   param;          /**< Settings       */
-    pj_pool_t               *pool;          /**< Memory pool.       */
-
-    pjmedia_vid_dev_cb      vid_cb;         /**< Stream callback.   */
-    void                    *user_data;     /**< Application data.  */
+typedef struct scream{
+    pj_pool_t               *pool;           /**< Memory pool.       */
+    pjmedia_vid_dev_cb      vid_cb;          /**< Stream callback.   */
+    void                    *user_data;      /**< Application data.  */
 
     struct sdl_factory      *sf;
     const pjmedia_frame     *frame;
@@ -214,13 +210,13 @@ struct sdl_stream{
     pj_timestamp            last_ts;
     struct stream_list      list_entry;
 
-    SDL_Window              *window;        /**< Display window.    */
-    SDL_Renderer            *renderer;      /**< Display renderer.  */
-    SDL_Texture             *scr_tex;       /**< Screen  texture.   */
+    SDL_Window              *window;         /**< Display window.    */
+    SDL_Renderer            *renderer;       /**< Display renderer.  */
+    SDL_Texture             *scr_tex;        /**< Screen  texture.   */
 
-    int                   pitch;          /**< Pitch   value.     */
-    SDL_Rect              rect;           /**< Frame   rectangle  */
-    SDL_Rect              dstrect;        /**< Display rectangle. */
+    int                      pitch;          /**< Pitch   value.     */
+    SDL_Rect                 rect;           /**< Frame   rectangle  */
+    SDL_Rect                 dstrect;        /**< Display rectangle. */
 
 #if PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
     SDL_GLContext           *gl_context;
@@ -229,24 +225,57 @@ struct sdl_stream{
 
     pjmedia_video_apply_fmt_param vafp;
 
-	// ABChernic
-    SDL_Window              *windowP;        /**< Display window.    */
-    SDL_Window              *windowS;        /**< Display window.    */
-    SDL_Texture             *scr_texP;      /**< Screen  texture.   */
-    SDL_Texture             *scr_texS;      /**< Screen  texture.   */
+    // ABChernic
+    //SDL_Window              *windowP;       /**< Display window.    */
+    //SDL_Window              *windowS;       /**< Display window.    */
+    //SDL_Texture             *scr_texP;      /**< Screen  texture.   */
 
-    int                     pitchP;         /**< Pitch   value.     */
-    SDL_Rect                rectP;          /**< Frame   rectangle  */
-    SDL_Rect                dstrectP;       /**< Display rectangle. */
+    //int                     pitchP;         /**< Pitch   value.     */
+    //SDL_Rect                rectP;          /**< Frame   rectangle  */
+    //SDL_Rect                dstrectP;       /**< Display rectangle. */
 
-    int                     pitchS;         /**< Pitch   value.     */
-    SDL_Rect                rectS;          /**< Frame   rectangle  */
-    SDL_Rect                dstrectS;       /**< Display rectangle. */
-    int                     thread_exit;    /* if exit             */
-    int                     thread_pause;   /* if pause             */
-    pj_str_t                running_dir;    /* OCX runing directory */
+    SDL_Texture             *scr_texS;        /**< Screen  texture.   */
+    int                     pitchS;           /**< Pitch   value.     */
+    SDL_Rect                rectS;            /**< Frame   rectangle  */
+    SDL_Rect                dstrectS;         /**< Display rectangle. */
+
+    int                     thread_exit;      /* if exit              */
+    int                     thread_pause;     /* if pause             */
+    pj_str_t                running_dir;      /* OCX runing directory */
     sdl_toolbar_info_t      toolbar;
+}sdl_scream;
 
+/* Video stream. */
+struct sdl_stream{
+    pjmedia_vid_dev_stream  base;           /**< Base stream        */
+    pjmedia_vid_dev_param   param;          /**< Settings           */
+    sdl_scream              sp;
+    sdl_scream              ss;
+//    pj_pool_t               *pool;          /**< Memory pool.       */
+//
+//    pjmedia_vid_dev_cb      vid_cb;         /**< Stream callback.   */
+//    void                    *user_data;     /**< Application data.  */
+//
+//    struct sdl_factory      *sf;
+//    const pjmedia_frame     *frame;
+//    pj_bool_t               is_running;
+//    pj_timestamp            last_ts;
+//    struct stream_list      list_entry;
+//
+//    SDL_Window              *window;        /**< Display window.    */
+//    SDL_Renderer            *renderer;      /**< Display renderer.  */
+//    SDL_Texture             *scr_tex;       /**< Screen  texture.   */
+//
+//    int                   pitch;          /**< Pitch   value.     */
+//    SDL_Rect              rect;           /**< Frame   rectangle  */
+//    SDL_Rect              dstrect;        /**< Display rectangle. */
+//
+//#if PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
+//    SDL_GLContext           *gl_context;
+//    GLuint                  texture;
+//#endif /* PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL */
+//
+//    pjmedia_video_apply_fmt_param vafp;
 };
 
 /* Prototypes */
@@ -257,27 +286,27 @@ static unsigned    sdl_factory_get_dev_count(pjmedia_vid_dev_factory *f);
 static pj_status_t sdl_factory_get_dev_info(pjmedia_vid_dev_factory *f,unsigned index,pjmedia_vid_dev_info *info);
 static pj_status_t sdl_factory_default_param(pj_pool_t *pool,pjmedia_vid_dev_factory *f,unsigned index,pjmedia_vid_dev_param *param);
 static pj_status_t sdl_factory_create_stream(pjmedia_vid_dev_factory *f,pjmedia_vid_dev_param *param,const pjmedia_vid_dev_cb *cb,void *user_data,pjmedia_vid_dev_stream **p_vid_strm);
-static pj_status_t resize_disp			(struct sdl_stream *strm,pjmedia_rect_size *new_disp_size);
-static pj_status_t sdl_destroy_all		(void *data);
+static pj_status_t resize_disp          (struct sdl_stream *strm,pjmedia_rect_size *new_disp_size);
+static pj_status_t sdl_destroy_all      (void *data);
 
 /// ABChernic : 2018-01-04 >>>
 // O1
-static pj_status_t sdl_stream_get_param	(pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_param *param);
+static pj_status_t sdl_stream_get_param (pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_param *param);
 // O2
-static pj_status_t sdl_stream_get_cap	(pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_cap cap,void *value);
+static pj_status_t sdl_stream_get_cap   (pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_cap cap,void *value);
 // O3
-static pj_status_t sdl_stream_set_cap	(pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_cap cap,const void *value);
+static pj_status_t sdl_stream_set_cap   (pjmedia_vid_dev_stream *strm,pjmedia_vid_dev_cap cap,const void *value);
 // O4
-static pj_status_t sdl_stream_start		(pjmedia_vid_dev_stream *strm);
+static pj_status_t sdl_stream_start     (pjmedia_vid_dev_stream *strm);
 
 // O6
-static pj_status_t sdl_stream_put_frame	(pjmedia_vid_dev_stream *strm,const pjmedia_frame *frame);
+static pj_status_t sdl_stream_put_frame (pjmedia_vid_dev_stream *strm,const pjmedia_frame *frame);
 // O7
-static pj_status_t sdl_stream_stop		(pjmedia_vid_dev_stream *strm);
+static pj_status_t sdl_stream_stop      (pjmedia_vid_dev_stream *strm);
 // O8
-static pj_status_t sdl_stream_destroy	(pjmedia_vid_dev_stream *strm);
+static pj_status_t sdl_stream_destroy   (pjmedia_vid_dev_stream *strm);
 // O9
-static pj_status_t sdl_stream_set_dir	(pjmedia_vid_dev_stream *strm, const void *value);
+static pj_status_t sdl_stream_set_dir   (pjmedia_vid_dev_stream *strm, const void *value);
 
 static pj_status_t sdl_stream_pass_sdl_window (pjmedia_vid_dev_stream *strm, pjmedia_vid_dev_stream *strmP);
 static pj_status_t sdl_stream_get_sdl_window (pjmedia_vid_dev_stream *strm, void *value);
@@ -315,12 +344,12 @@ static pjmedia_vid_dev_stream_op stream_op ={
     &sdl_stream_stop,               // O7 *stop
     &sdl_stream_destroy,            // O8 *destroy
     &sdl_stream_set_dir,            // O9 *set_dir
-    &sdl_stream_put_previw,			// 10 *put_previw
-    &sdl_stream_put_stream,			// 11 *put_stream
+    &sdl_stream_put_previw,         // 10 *put_previw
+    &sdl_stream_put_stream,         // 11 *put_stream
 
-	&sdl_stream_pass_sdl_window,    // 12
-	&sdl_stream_get_sdl_window,		// 12
-	&sdl_stream_set_sdl_window,		// 13
+    &sdl_stream_pass_sdl_window,    // 12
+    &sdl_stream_get_sdl_window,     // 12
+    &sdl_stream_set_sdl_window,     // 13
 };
 /// ABChernic : 2018-01-04 <<<
 
@@ -370,7 +399,7 @@ static struct sdl_stream* find_stream(struct sdl_factory *sf,Uint32 windowID,pjm
 
     itBegin = &sf->streams;
     for (it = itBegin->next; it != itBegin; it = it->next) {
-        if (SDL_GetWindowID(it->stream->window) == windowID)
+        if (SDL_GetWindowID(it->stream->sp.window) == windowID)
         {
             strm = it->stream;
             break;
@@ -378,7 +407,7 @@ static struct sdl_stream* find_stream(struct sdl_factory *sf,Uint32 windowID,pjm
     }
  
     if (strm)
-        pjmedia_event_init(pevent, PJMEDIA_EVENT_NONE, &strm->last_ts,
+        pjmedia_event_init(pevent, PJMEDIA_EVENT_NONE, &strm->sp.last_ts,
                    strm);
 
     return strm;
@@ -386,14 +415,14 @@ static struct sdl_stream* find_stream(struct sdl_factory *sf,Uint32 windowID,pjm
 /// toolbar_make
 static pj_status_t sdl_toolbar_make         (struct sdl_stream *strm, int WindowW, int WindowH, int ButtonW, int ButtonH) {
     int Plus=2;
-	int tool_h = ButtonH+Plus;
-	(ButtonW);
+    int tool_h = ButtonH+Plus;
+    (ButtonW);
 
     /// ABChernic : 设置按钮栏四维
-    strm->toolbar.mBlankRect.x = 0;
-    strm->toolbar.mBlankRect.y = WindowH-tool_h;
-    strm->toolbar.mBlankRect.w = WindowW;
-    strm->toolbar.mBlankRect.h = tool_h;
+    strm->sp.toolbar.mBlankRect.x = 0;
+    strm->sp.toolbar.mBlankRect.y = WindowH-tool_h;
+    strm->sp.toolbar.mBlankRect.w = WindowW;
+    strm->sp.toolbar.mBlankRect.h = tool_h;
 
     return PJ_SUCCESS;
 };
@@ -404,10 +433,10 @@ static pj_status_t sdl_toolbar_make_play    (struct sdl_stream *strm, int Window
     int y=WindowH-ButtonH-Plus;
     int w=ButtonW;
     int h=ButtonH;
-    strm->toolbar.mPlay.decR.x=x;
-    strm->toolbar.mPlay.decR.y=y;
-    strm->toolbar.mPlay.decR.w=w;
-    strm->toolbar.mPlay.decR.h=h;
+    strm->sp.toolbar.mPlay.decR.x=x;
+    strm->sp.toolbar.mPlay.decR.y=y;
+    strm->sp.toolbar.mPlay.decR.w=w;
+    strm->sp.toolbar.mPlay.decR.h=h;
     return PJ_SUCCESS;
 };
 static pj_status_t sdl_toolbar_make_close   (struct sdl_stream *strm, int WindowW, int WindowH, int ButtonW, int ButtonH) {
@@ -417,16 +446,16 @@ static pj_status_t sdl_toolbar_make_close   (struct sdl_stream *strm, int Window
     int y=WindowH-ButtonH-Plus;
     int w=ButtonW;
     int h=ButtonH;
-    strm->toolbar.mClose.decR.x=x;
-    strm->toolbar.mClose.decR.y=y;
-    strm->toolbar.mClose.decR.w=w;
-    strm->toolbar.mClose.decR.h=h;
+    strm->sp.toolbar.mClose.decR.x=x;
+    strm->sp.toolbar.mClose.decR.y=y;
+    strm->sp.toolbar.mClose.decR.w=w;
+    strm->sp.toolbar.mClose.decR.h=h;
     return PJ_SUCCESS;
 };
 
 /// toolbar_load
 static pj_status_t sdl_toolbar_load_play    (struct sdl_stream *strm, const char *file) {
-    // 输出 strm->toolbar.mPlay.pTexture
+    // 输出 strm->sp.toolbar.mPlay.pTexture
     SDL_Surface   *temp;
     SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND;
 
@@ -435,7 +464,7 @@ static pj_status_t sdl_toolbar_load_play    (struct sdl_stream *strm, const char
     //SDL_BLENDMODE_MOD = 0x00000004
 
 
-    SDL_Renderer *pRenderer = strm->renderer;
+    SDL_Renderer *pRenderer = strm->sp.renderer;
 
     /* Load the sprite image */
     temp = SDL_LoadBMP(file);
@@ -467,16 +496,16 @@ static pj_status_t sdl_toolbar_load_play    (struct sdl_stream *strm, const char
 
     /* Use this function to copy a portion of the texture 
     to the current rendering target.*/
-    strm->toolbar.mPlay.pTexture = SDL_CreateTextureFromSurface(pRenderer, temp);
-    if (!strm->toolbar.mPlay.pTexture) {
+    strm->sp.toolbar.mPlay.pTexture = SDL_CreateTextureFromSurface(pRenderer, temp);
+    if (!strm->sp.toolbar.mPlay.pTexture) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture: %s\n", SDL_GetError());
       SDL_FreeSurface(temp);
       return (-1);
     }
-    if (SDL_SetTextureBlendMode(strm->toolbar.mPlay.pTexture, blendMode) < 0) {
+    if (SDL_SetTextureBlendMode(strm->sp.toolbar.mPlay.pTexture, blendMode) < 0) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set blend mode: %s\n", SDL_GetError());
       SDL_FreeSurface(temp);
-      SDL_DestroyTexture(strm->toolbar.mPlay.pTexture);
+      SDL_DestroyTexture(strm->sp.toolbar.mPlay.pTexture);
       return (-1);
     }
     SDL_FreeSurface(temp);
@@ -484,10 +513,10 @@ static pj_status_t sdl_toolbar_load_play    (struct sdl_stream *strm, const char
     return (0);
 }
 static pj_status_t sdl_toolbar_load_close   (struct sdl_stream *strm, const char *file) {
-    // 输出 strm->toolbar.mClose.pTexture
+    // 输出 strm->sp.toolbar.mClose.pTexture
     SDL_Surface   *temp;
     SDL_BlendMode blendMode = SDL_BLENDMODE_NONE;
-    SDL_Renderer *pRenderer = strm->renderer;
+    SDL_Renderer *pRenderer = strm->sp.renderer;
     /* Load the sprite image */
     temp = SDL_LoadBMP(file);
     if (temp == NULL) {
@@ -518,16 +547,16 @@ static pj_status_t sdl_toolbar_load_close   (struct sdl_stream *strm, const char
 
     /* Use this function to copy a portion of the texture 
     to the current rendering target.*/
-    strm->toolbar.mClose.pTexture = SDL_CreateTextureFromSurface(pRenderer, temp);
-    if (!strm->toolbar.mClose.pTexture) {
+    strm->sp.toolbar.mClose.pTexture = SDL_CreateTextureFromSurface(pRenderer, temp);
+    if (!strm->sp.toolbar.mClose.pTexture) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture: %s\n", SDL_GetError());
       SDL_FreeSurface(temp);
       return (-1);
     }
-    if (SDL_SetTextureBlendMode(strm->toolbar.mClose.pTexture, blendMode) < 0) {
+    if (SDL_SetTextureBlendMode(strm->sp.toolbar.mClose.pTexture, blendMode) < 0) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set blend mode: %s\n", SDL_GetError());
       SDL_FreeSurface(temp);
-      SDL_DestroyTexture(strm->toolbar.mClose.pTexture);
+      SDL_DestroyTexture(strm->sp.toolbar.mClose.pTexture);
       return (-1);
     }
     SDL_FreeSurface(temp);
@@ -536,44 +565,44 @@ static pj_status_t sdl_toolbar_load_close   (struct sdl_stream *strm, const char
 }
 /// toolbar_show
 static pj_status_t sdl_toolbar_update      (struct sdl_stream *strm){
-	int WindowW = strm->param.disp_size.w; //strm->dstrect.w;
-	int WindowH = strm->param.disp_size.h; //strm->dstrect.h;
-	int ButtonW = strm->toolbar.size.w;
-	int ButtonH = strm->toolbar.size.h;
-	sdl_toolbar_make      (strm, WindowW, WindowH, ButtonW, ButtonH);
-	sdl_toolbar_make_close(strm, WindowW, WindowH, ButtonW, ButtonH);
-	sdl_toolbar_make_play (strm, WindowW, WindowH, ButtonW, ButtonH);
+    int WindowW = strm->param.disp_size.w; //strm->dstrect.w;
+    int WindowH = strm->param.disp_size.h; //strm->dstrect.h;
+    int ButtonW = strm->sp.toolbar.size.w;
+    int ButtonH = strm->sp.toolbar.size.h;
+    sdl_toolbar_make      (strm, WindowW, WindowH, ButtonW, ButtonH);
+    sdl_toolbar_make_close(strm, WindowW, WindowH, ButtonW, ButtonH);
+    sdl_toolbar_make_play (strm, WindowW, WindowH, ButtonW, ButtonH);
     return PJ_SUCCESS;
 }
 static pj_status_t sdl_toolbar_show         (struct sdl_stream *strm){
-    SDL_SetRenderDrawColor(strm->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderFillRect(strm->renderer, &strm->toolbar.mBlankRect);
-    SDL_SetRenderDrawColor(strm->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_SetRenderDrawColor(strm->sp.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderFillRect(strm->sp.renderer, &strm->sp.toolbar.mBlankRect);
+    SDL_SetRenderDrawColor(strm->sp.renderer, 0x00, 0x00, 0x00, 0x00);
     return PJ_SUCCESS;
 }
 static pj_status_t sdl_toolbar_show_close   (struct sdl_stream *strm){
-    if (!strm->toolbar.mClose.pTexture) {
+    if (!strm->sp.toolbar.mClose.pTexture) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Please firstly create texture: %s\n", SDL_GetError());
       return PJ_FALSE;
     }
-    SDL_RenderCopy(strm->renderer, strm->toolbar.mClose.pTexture, strm->toolbar.mClose.pSrcR, &strm->toolbar.mClose.decR);
+    SDL_RenderCopy(strm->sp.renderer, strm->sp.toolbar.mClose.pTexture, strm->sp.toolbar.mClose.pSrcR, &strm->sp.toolbar.mClose.decR);
     return PJ_SUCCESS;
 }
 static pj_status_t sdl_toolbar_show_play    (struct sdl_stream *strm){
 
-    if (!strm->toolbar.mPlay.pTexture) {
+    if (!strm->sp.toolbar.mPlay.pTexture) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Please firstly create texture: %s\n", SDL_GetError());
       return PJ_FALSE;
     }
-    SDL_RenderCopy(strm->renderer, strm->toolbar.mPlay.pTexture, strm->toolbar.mPlay.pSrcR, &strm->toolbar.mPlay.decR);
+    SDL_RenderCopy(strm->sp.renderer, strm->sp.toolbar.mPlay.pTexture, strm->sp.toolbar.mPlay.pSrcR, &strm->sp.toolbar.mPlay.decR);
     return PJ_SUCCESS;
 }
 
 static pj_status_t handle_event_button_play(struct sdl_stream *strm, SDL_Event sevent){
-    /// strm->toolbar.mPlay.pSrcR
-    /// strm->toolbar.mPlay.isChecked
-    SDL_Rect    decR       = strm->toolbar.mPlay.decR;
-    euBtnStste  isChecked  = strm->toolbar.mPlay.isChecked;
+    /// strm->sp.toolbar.mPlay.pSrcR
+    /// strm->sp.toolbar.mPlay.isChecked
+    SDL_Rect    decR       = strm->sp.toolbar.mPlay.decR;
+    euBtnStste  isChecked  = strm->sp.toolbar.mPlay.isChecked;
     int x=0,y=0;
     if(sevent.type==SDL_MOUSEMOTION) {
         // 如果发现了鼠标移动事件，就要得到鼠标当前位置，然后判断其是否在定义的button内
@@ -581,10 +610,10 @@ static pj_status_t handle_event_button_play(struct sdl_stream *strm, SDL_Event s
         y=sevent.motion.y;
         // 如果鼠标在定义的button内
         if((x>decR.x)&&(x<decR.x+decR.w)&&(y>decR.y)&&(y<decR.y+decR.h)){
-            strm->toolbar.mPlay.pSrcR = &(strm->toolbar.mPlay.btnRect.mouseover[isChecked]);
+            strm->sp.toolbar.mPlay.pSrcR = &(strm->sp.toolbar.mPlay.btnRect.mouseover[isChecked]);
         // 鼠标在button外
         }else{ 
-            strm->toolbar.mPlay.pSrcR = &(strm->toolbar.mPlay.btnRect.mouseout[isChecked]);
+            strm->sp.toolbar.mPlay.pSrcR = &(strm->sp.toolbar.mPlay.btnRect.mouseout[isChecked]);
         }
     }
     // 如果发生了鼠标按键按下事件
@@ -595,10 +624,10 @@ static pj_status_t handle_event_button_play(struct sdl_stream *strm, SDL_Event s
             y=sevent.button.y;
             if((x>decR.x)&&(x<decR.x+decR.w)&&(y>decR.y)&&(y<decR.y+decR.h)){
                 // 反相
-                strm->toolbar.mPlay.isChecked = (isChecked==BTUUON_CHECKED)?BTUUON_UNCHECKED:BTUUON_CHECKED;
+                strm->sp.toolbar.mPlay.isChecked = (isChecked==BTUUON_CHECKED)?BTUUON_UNCHECKED:BTUUON_CHECKED;
 
                 // 如果按下鼠标左键的时候鼠标处在button内
-                strm->toolbar.mPlay.pSrcR = &(strm->toolbar.mPlay.btnRect.mousedown[isChecked]);
+                strm->sp.toolbar.mPlay.pSrcR = &(strm->sp.toolbar.mPlay.btnRect.mousedown[isChecked]);
             }
         }
     }
@@ -610,17 +639,17 @@ static pj_status_t handle_event_button_play(struct sdl_stream *strm, SDL_Event s
             y=sevent.button.y;
             if((x>decR.x)&&(x<decR.x+decR.w)&&(y>decR.y)&&(y<decR.y+decR.h))
             {// 如果按下鼠标左键的时候鼠标处在button内
-                strm->toolbar.mPlay.pSrcR = &(strm->toolbar.mPlay.btnRect.mouseup[isChecked]);
+                strm->sp.toolbar.mPlay.pSrcR = &(strm->sp.toolbar.mPlay.btnRect.mouseup[isChecked]);
             }
         }
     }
     return PJ_SUCCESS;
 }
 static pj_status_t handle_event_button_close(struct sdl_stream *strm, SDL_Event sevent){
-    /// strm->toolbar.mClose.pSrcR
-    /// strm->toolbar.mClose.isChecked
-    SDL_Rect    decR       = strm->toolbar.mClose.decR;
-    euBtnStste  isChecked  = strm->toolbar.mClose.isChecked;
+    /// strm->sp.toolbar.mClose.pSrcR
+    /// strm->sp.toolbar.mClose.isChecked
+    SDL_Rect    decR       = strm->sp.toolbar.mClose.decR;
+    euBtnStste  isChecked  = strm->sp.toolbar.mClose.isChecked;
     pj_status_t status;
     int x=0,y=0;
     if(sevent.type==SDL_MOUSEMOTION) {
@@ -629,10 +658,10 @@ static pj_status_t handle_event_button_close(struct sdl_stream *strm, SDL_Event 
         y=sevent.motion.y;
         // 如果鼠标在定义的button内
         if((x>decR.x)&&(x<decR.x+decR.w)&&(y>decR.y)&&(y<decR.y+decR.h)){
-            strm->toolbar.mClose.pSrcR = &(strm->toolbar.mClose.btnRect.mouseover[isChecked]);
+            strm->sp.toolbar.mClose.pSrcR = &(strm->sp.toolbar.mClose.btnRect.mouseover[isChecked]);
         // 鼠标在button外
         }else{ 
-            strm->toolbar.mClose.pSrcR = &(strm->toolbar.mClose.btnRect.mouseout[isChecked]);
+            strm->sp.toolbar.mClose.pSrcR = &(strm->sp.toolbar.mClose.btnRect.mouseout[isChecked]);
         }
     }
     // 如果发生了鼠标按键按下事件
@@ -656,7 +685,7 @@ static pj_status_t handle_event_button_close(struct sdl_stream *strm, SDL_Event 
             y=sevent.button.y;
             if((x>decR.x)&&(x<decR.x+decR.w)&&(y>decR.y)&&(y<decR.y+decR.h))
             {
-				status = sdl_destroy_all(strm);
+                status = sdl_destroy_all(strm);
                 if (status != PJ_SUCCESS)
                     return status;  
             }
@@ -668,15 +697,15 @@ static pj_status_t handle_event(void *data){
     struct sdl_factory *sf = (struct sdl_factory*)data;
     SDL_Rect     BlankRect;
     SDL_Event    sevent;
-	//SDL_Texture  *tmpTex;
-	//struct sdl_stream *strm = NULL;
-	struct sdl_stream *TmpstrmP = NULL;
-	struct sdl_stream *TmpstrmS = NULL;
-	struct sdl_stream *strmP = NULL;
-	struct sdl_stream *strmS = NULL;
+    //SDL_Texture  *tmpTex;
+    //struct sdl_stream *strm = NULL;
+    //struct sdl_stream *TmpstrmP = NULL;
+    //struct sdl_stream *TmpstrmS = NULL;
+    //struct sdl_stream *strmP = NULL;
+    //struct sdl_stream *strmS = NULL;
 
-	//const pjmedia_frame *frameP = NULL;
-	//const pjmedia_frame *frameS = NULL;
+    //const pjmedia_frame *frameP = NULL;
+    //const pjmedia_frame *frameS = NULL;
     int x=0;
     int y=0;
 
@@ -690,120 +719,35 @@ static pj_status_t handle_event(void *data){
         pj_mutex_lock(sf->mutex);
         pevent.type = PJMEDIA_EVENT_NONE;
         switch(sevent.type) {
-		   /**
-			 * \brief Set a texture as the current rendering target.
-			 *
-			 * \param renderer The renderer.
-			 * \param texture The targeted texture, which must be created with the SDL_TEXTUREACCESS_TARGET flag, or NULL for the default render target
-			 *
-			 * \return 0 on success, or -1 on error
-			 *
-			 *  \sa SDL_GetRenderTarget()
-			  extern DECLSPEC int SDLCALL SDL_SetRenderTarget(SDL_Renderer *renderer,											SDL_Texture *texture);
-			 */
-
-
-			case SFM_REFRESH_COMPLX_EVENT:{
-				TmpstrmP = (struct sdl_stream *)sevent.user.data1;
-				TmpstrmS = (struct sdl_stream *)sevent.user.data2;
-
-				if(TmpstrmS){
-					strmS = TmpstrmS;
-				}
-				if(TmpstrmP){
-					strmP = TmpstrmP;
-				}
-
-				strm = strmP;
-				if (strmS && strmP) {
-
-					SDL_RenderClear  (strm->renderer);
-					//SDL_SetRenderTarget(strm->renderer, tmpTex);
-					SDL_RenderCopy   (strm->renderer,  strmS->scr_texS, NULL, &strm->dstrectS);
-					SDL_RenderCopy   (strm->renderer,   strm->scr_texP,  NULL, &strm->dstrectP);
-					sdl_toolbar_update(strm);
-					if(strm->toolbar.isToolBarShowed){
-						sdl_toolbar_show      (strm); // update strm->toolbar.mBlankRect
-						sdl_toolbar_show_play (strm); // update strm->toolbar.mClose.decR
-						sdl_toolbar_show_close(strm); // update strm->toolbar.mClose.decR
-					}
-					SDL_RenderPresent(strm->renderer);
-
-					SDL_RenderClear  (strmS->renderer);
-					SDL_RenderCopy   (strmS->renderer, strmS->scr_texS, NULL, NULL);
-					SDL_RenderPresent(strmS->renderer);
-				}
-            }break;
-			case SFM_REFRESH_STREAM_EVENT:{
-				TmpstrmP = (struct sdl_stream *)sevent.user.data1;
-				TmpstrmS = (struct sdl_stream *)sevent.user.data2;
-
-				strmS = TmpstrmS;
-				strm  = strmS;
-				if (strm->scr_texS) {
-					SDL_RenderClear  (strm->renderer);
-					SDL_RenderCopy   (strm->renderer, strm->scr_texS, NULL, NULL);
-				}
-            }break;
-			case SFM_REFRESH_PRIVIW_EVENT:{
-				TmpstrmP = (struct sdl_stream *)sevent.user.data1;
-				TmpstrmS = (struct sdl_stream *)sevent.user.data2;
-
-				strmP = TmpstrmP;
-				strm  = strmP;
-				if (strm->scr_texP) {
-					SDL_RenderClear  (strm->renderer);
-					SDL_RenderCopy   (strm->renderer, strm->scr_texP, NULL, NULL);
-					SDL_RenderPresent(strm->renderer);
-				}
-
-				/*
-				//if( NULL==TmpstrmP && NULL!=TmpstrmS ){
-				if( NULL!=TmpstrmS ){
-					strmS = TmpstrmS;
-				}
-
-				//if( NULL!=TmpstrmP && NULL==TmpstrmS ){
-				if( NULL!=TmpstrmP ){
-					strmP = TmpstrmP;
-				}
-
-			    //if (strmS && strmP) {
-			    if ( strmS && strmP && strmS->scr_texS && strmP->scr_texP) {
-					SDL_RenderClear  (strmP->renderer);
-
-					SDL_RenderCopy   (strmP->renderer, strmS->scr_texS, &strmP->rectS, &strmP->dstrectS);
-					SDL_RenderCopy   (strmP->renderer, strmP->scr_texP, &strmP->rectP, &strmP->dstrectP);
-
-					sdl_toolbar_update(strmP);
-					if(strmP->toolbar.isToolBarShowed){
-						sdl_toolbar_show      (strmP); // update strm->toolbar.mBlankRect
-						sdl_toolbar_show_play (strmP); // update strm->toolbar.mClose.decR
-						sdl_toolbar_show_close(strmP); // update strm->toolbar.mClose.decR
-					}
-					SDL_RenderPresent(strmP->renderer);
-				}
-
-				*/
-            }break;
-			case SDL_MOUSEMOTION:{
+           /**
+             * \brief Set a texture as the current rendering target.
+             *
+             * \param renderer The renderer.
+             * \param texture The targeted texture, which must be created with the SDL_TEXTUREACCESS_TARGET flag, or NULL for the default render target
+             *
+             * \return 0 on success, or -1 on error
+             *
+             *  \sa SDL_GetRenderTarget()
+              extern DECLSPEC int SDLCALL SDL_SetRenderTarget(SDL_Renderer *renderer,                                           SDL_Texture *texture);
+             */
+            case SDL_MOUSEMOTION:{
                 strm = find_stream(sf, sevent.button.windowID, &pevent);
-				if(strm && !strm->thread_exit){
-					BlankRect = strm->toolbar.mBlankRect;
-					x = sevent.motion.x;
-					y = sevent.motion.y;
-					if((x>BlankRect.x)&&(x<BlankRect.x+BlankRect.w)&&(y>BlankRect.y)&&(y<BlankRect.y+BlankRect.h)){
-						strm->toolbar.isToolBarShowed = 1;
-					}else{
-						strm->toolbar.isToolBarShowed = 0;
-					}
-				}
+                if(strm && !strm->sp.thread_exit){
+                    BlankRect = strm->sp.toolbar.mBlankRect;
+                    x = sevent.motion.x;
+                    y = sevent.motion.y;
+                    if((x>BlankRect.x)&&(x<BlankRect.x+BlankRect.w)&&(y>BlankRect.y)&&(y<BlankRect.y+BlankRect.h)){
+                        strm->sp.toolbar.isToolBarShowed = 1;
+                    }else{
+                        strm->sp.toolbar.isToolBarShowed = 0;
+                    }
+                }
             }break;
-			case SDL_MOUSEBUTTONDOWN:{
+            case SDL_MOUSEBUTTONDOWN:{
                 strm = find_stream(sf, sevent.button.windowID, &pevent);
                 pevent.type = PJMEDIA_EVENT_MOUSE_BTN_DOWN;
-			}break;
-			case SDL_WINDOWEVENT:{
+            }break;
+            case SDL_WINDOWEVENT:{
                 strm = find_stream(sf, sevent.window.windowID, &pevent);
                 switch (sevent.window.event) {
                 case SDL_WINDOWEVENT_RESIZED:
@@ -817,7 +761,7 @@ static pj_status_t handle_event(void *data){
                     pevent.type = PJMEDIA_EVENT_WND_CLOSING;
                     break;
                 }
-			}break;
+            }break;
             default:
                 break;
         }
@@ -849,7 +793,7 @@ static pj_status_t handle_event(void *data){
                     sdl_stream_stop(&strm->base);
                     sdl_destroy_all(strm);
                     pjmedia_event_init(&pevent, PJMEDIA_EVENT_WND_CLOSED,
-                                       &strm->last_ts, strm);
+                                       &strm->sp.last_ts, strm);
                     pjmedia_event_publish(NULL, strm, &pevent, (pjmedia_event_publish_flag)0);
 
                     /*
@@ -1084,18 +1028,18 @@ static pj_status_t sdl_destroy(void *data){
     }
 #endif /* PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL */
 
-    if (strm->scr_texP) {
-        SDL_DestroyTexture(strm->scr_texP);
-        strm->scr_texP = NULL;
+    if (strm->sp.scr_tex) {
+        SDL_DestroyTexture(strm->sp.scr_tex);
+        strm->sp.scr_tex = NULL;
     }
-    if (strm->scr_texS) {
-        SDL_DestroyTexture(strm->scr_texS);
-        strm->scr_texS = NULL;
+    if (strm->sp.scr_texS) {
+        SDL_DestroyTexture(strm->sp.scr_texS);
+        strm->sp.scr_texS = NULL;
     }
 
-    if (strm->renderer) {
-        SDL_DestroyRenderer(strm->renderer);
-        strm->renderer = NULL;
+    if (strm->sp.renderer) {
+        SDL_DestroyRenderer(strm->sp.renderer);
+        strm->sp.renderer = NULL;
     }    
     return PJ_SUCCESS;
 }
@@ -1104,12 +1048,12 @@ static pj_status_t sdl_destroy_all(void *data){
     struct sdl_stream *strm = (struct sdl_stream *)data;  
     sdl_destroy(data);
 #if !defined(TARGET_OS_IPHONE) || TARGET_OS_IPHONE == 0
-    if (strm->window &&
+    if (strm->sp.window &&
         !(strm->param.flags & PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW))
     {
-        SDL_DestroyWindow(strm->window);
+        SDL_DestroyWindow(strm->sp.window);
     }
-    strm->window   = NULL;
+    strm->sp.window   = NULL;
     // AAC
     //strm->pToolBar = NULL;
 #endif /* TARGET_OS_IPHONE */
@@ -1121,52 +1065,52 @@ static pj_status_t sdl_destroy_all(void *data){
  *
  */
 void setBtnMouseoverRect_play   (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mPlay.btnRect.mouseover[is_checked].x=x;
-    strm->toolbar.mPlay.btnRect.mouseover[is_checked].y=y;
-    strm->toolbar.mPlay.btnRect.mouseover[is_checked].w=w;
-    strm->toolbar.mPlay.btnRect.mouseover[is_checked].h=h;
+    strm->sp.toolbar.mPlay.btnRect.mouseover[is_checked].x=x;
+    strm->sp.toolbar.mPlay.btnRect.mouseover[is_checked].y=y;
+    strm->sp.toolbar.mPlay.btnRect.mouseover[is_checked].w=w;
+    strm->sp.toolbar.mPlay.btnRect.mouseover[is_checked].h=h;
 }
 void setBtnMouseoutRect_play    (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mPlay.btnRect.mouseout[is_checked].x=x;
-    strm->toolbar.mPlay.btnRect.mouseout[is_checked].y=y;
-    strm->toolbar.mPlay.btnRect.mouseout[is_checked].w=w;
-    strm->toolbar.mPlay.btnRect.mouseout[is_checked].h=h;
+    strm->sp.toolbar.mPlay.btnRect.mouseout[is_checked].x=x;
+    strm->sp.toolbar.mPlay.btnRect.mouseout[is_checked].y=y;
+    strm->sp.toolbar.mPlay.btnRect.mouseout[is_checked].w=w;
+    strm->sp.toolbar.mPlay.btnRect.mouseout[is_checked].h=h;
 }
 void setBtnMousedownRect_play   (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mPlay.btnRect.mousedown[is_checked].x=x;
-    strm->toolbar.mPlay.btnRect.mousedown[is_checked].y=y;
-    strm->toolbar.mPlay.btnRect.mousedown[is_checked].w=w;
-    strm->toolbar.mPlay.btnRect.mousedown[is_checked].h=h;
+    strm->sp.toolbar.mPlay.btnRect.mousedown[is_checked].x=x;
+    strm->sp.toolbar.mPlay.btnRect.mousedown[is_checked].y=y;
+    strm->sp.toolbar.mPlay.btnRect.mousedown[is_checked].w=w;
+    strm->sp.toolbar.mPlay.btnRect.mousedown[is_checked].h=h;
 }
 void setBtnMouseupRect_play     (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mPlay.btnRect.mouseup[is_checked].x=x;
-    strm->toolbar.mPlay.btnRect.mouseup[is_checked].y=y;
-    strm->toolbar.mPlay.btnRect.mouseup[is_checked].w=w;
-    strm->toolbar.mPlay.btnRect.mouseup[is_checked].h=h;
+    strm->sp.toolbar.mPlay.btnRect.mouseup[is_checked].x=x;
+    strm->sp.toolbar.mPlay.btnRect.mouseup[is_checked].y=y;
+    strm->sp.toolbar.mPlay.btnRect.mouseup[is_checked].w=w;
+    strm->sp.toolbar.mPlay.btnRect.mouseup[is_checked].h=h;
 }
 void setBtnMouseoverRect_close  (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mClose.btnRect.mouseover[is_checked].x=x;
-    strm->toolbar.mClose.btnRect.mouseover[is_checked].y=y;
-    strm->toolbar.mClose.btnRect.mouseover[is_checked].w=w;
-    strm->toolbar.mClose.btnRect.mouseover[is_checked].h=h;
+    strm->sp.toolbar.mClose.btnRect.mouseover[is_checked].x=x;
+    strm->sp.toolbar.mClose.btnRect.mouseover[is_checked].y=y;
+    strm->sp.toolbar.mClose.btnRect.mouseover[is_checked].w=w;
+    strm->sp.toolbar.mClose.btnRect.mouseover[is_checked].h=h;
 }
 void setBtnMouseoutRect_close   (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mClose.btnRect.mouseout[is_checked].x=x;
-    strm->toolbar.mClose.btnRect.mouseout[is_checked].y=y;
-    strm->toolbar.mClose.btnRect.mouseout[is_checked].w=w;
-    strm->toolbar.mClose.btnRect.mouseout[is_checked].h=h;
+    strm->sp.toolbar.mClose.btnRect.mouseout[is_checked].x=x;
+    strm->sp.toolbar.mClose.btnRect.mouseout[is_checked].y=y;
+    strm->sp.toolbar.mClose.btnRect.mouseout[is_checked].w=w;
+    strm->sp.toolbar.mClose.btnRect.mouseout[is_checked].h=h;
 }
 void setBtnMousedownRect_close  (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mClose.btnRect.mousedown[is_checked].x=x;
-    strm->toolbar.mClose.btnRect.mousedown[is_checked].y=y;
-    strm->toolbar.mClose.btnRect.mousedown[is_checked].w=w;
-    strm->toolbar.mClose.btnRect.mousedown[is_checked].h=h;
+    strm->sp.toolbar.mClose.btnRect.mousedown[is_checked].x=x;
+    strm->sp.toolbar.mClose.btnRect.mousedown[is_checked].y=y;
+    strm->sp.toolbar.mClose.btnRect.mousedown[is_checked].w=w;
+    strm->sp.toolbar.mClose.btnRect.mousedown[is_checked].h=h;
 }
 void setBtnMouseupRect_close    (struct sdl_stream *strm, int x, int y, int w, int h, euBtnStste is_checked) {
-    strm->toolbar.mClose.btnRect.mouseup[is_checked].x=x;
-    strm->toolbar.mClose.btnRect.mouseup[is_checked].y=y;
-    strm->toolbar.mClose.btnRect.mouseup[is_checked].w=w;
-    strm->toolbar.mClose.btnRect.mouseup[is_checked].h=h;
+    strm->sp.toolbar.mClose.btnRect.mouseup[is_checked].x=x;
+    strm->sp.toolbar.mClose.btnRect.mouseup[is_checked].y=y;
+    strm->sp.toolbar.mClose.btnRect.mouseup[is_checked].w=w;
+    strm->sp.toolbar.mClose.btnRect.mouseup[is_checked].h=h;
 }
 
 /// A3
@@ -1190,8 +1134,8 @@ static pj_status_t sdl_create_window        (struct sdl_stream *strm, pj_bool_t 
     setBtnMouseoutRect_close    (strm, 131,  27,   80,  80 ,BTUUON_UNCHECKED);
     setBtnMouseupRect_close     (strm, 131,  27,   80,  80 ,BTUUON_UNCHECKED);
     setBtnMousedownRect_close   (strm, 129,  25,   80,  80 ,BTUUON_UNCHECKED);
-	
-	if (!strm->window) {
+    
+    if (!strm->sp.window) {
         Uint32 flags = 0;
         
         if (strm->param.flags & PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW_FLAGS) {
@@ -1237,9 +1181,9 @@ static pj_status_t sdl_create_window        (struct sdl_stream *strm, pj_bool_t 
 #endif /* PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL */   
         if (use_app_win) {
             /* Use the window supplied by the application. */       
-            strm->window = SDL_CreateWindowFrom(hwnd->info.window);
+            strm->sp.window = SDL_CreateWindowFrom(hwnd->info.window);
 
-            if (!strm->window) {
+            if (!strm->sp.window) {
                 sdl_log_err("SDL_CreateWindowFrom()");
                 return PJMEDIA_EVID_SYSERR;
             }
@@ -1254,34 +1198,34 @@ static pj_status_t sdl_create_window        (struct sdl_stream *strm, pj_bool_t 
 
             /* Create the window where we will draw. */
             // X1
-            strm->window  = SDL_CreateWindow("pjmedia-SDL video",x, y,strm->param.disp_size.w,strm->param.disp_size.h,flags);
+            strm->sp.window  = SDL_CreateWindow("pjmedia-SDL video",x, y,strm->param.disp_size.w,strm->param.disp_size.h,flags);
 
             printf("SDL_CreateWindow()");
             printf("%d", strm->param.disp_size.w);
             printf("%d", strm->param.disp_size.h);
 
-            if (!strm->window) {
-				sdl_log_err("SDL_CreateWindow()");
-				return PJMEDIA_EVID_SYSERR;
+            if (!strm->sp.window) {
+                sdl_log_err("SDL_CreateWindow()");
+                return PJMEDIA_EVID_SYSERR;
             }
         }
     }
 
     // We must call SDL_CreateRenderer in order for draw calls to// affect this window.
-    strm->renderer = SDL_CreateRenderer(strm->window, -1, 0);
-    if (!strm->renderer) {
+    strm->sp.renderer = SDL_CreateRenderer(strm->sp.window, -1, 0);
+    if (!strm->sp.renderer) {
         sdl_log_err("SDL_CreateRenderer()");
         return PJMEDIA_EVID_SYSERR;
     }
 
 #if PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
     if (strm->param.rend_id == OPENGL_DEV_IDX) {
-        strm->gl_context = SDL_GL_CreateContext(strm->window);
+        strm->gl_context = SDL_GL_CreateContext(strm->sp.window);
         if (!strm->gl_context) {
             sdl_log_err("SDL_GL_CreateContext()");
             return PJMEDIA_EVID_SYSERR;
         }
-        SDL_GL_MakeCurrent(strm->window, strm->gl_context);
+        SDL_GL_MakeCurrent(strm->sp.window, strm->gl_context);
 
         /* Init some OpenGL settings */
     glDisable(GL_DEPTH_TEST);
@@ -1308,34 +1252,34 @@ static pj_status_t sdl_create_window        (struct sdl_stream *strm, pj_bool_t 
     } else
 #endif /* PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL */
     {
-		// 这里是显示区
-	    // ABChernic : ->rect1
-		strm->scr_texP = SDL_CreateTexture(strm->renderer, sdl_format, SDL_TEXTUREACCESS_STREAMING, strm->rectP.w, strm->rectP.h);
-        if (strm->scr_texP == NULL) {
+        // 这里是显示区
+        // ABChernic : ->rect1
+        strm->sp.scr_tex = SDL_CreateTexture(strm->sp.renderer, sdl_format, SDL_TEXTUREACCESS_STREAMING, strm->sp.rect.w, strm->sp.rect.h);
+        if (strm->sp.scr_tex == NULL) {
             sdl_log_err("scr_texP::SDL_CreateTexture()");
             return PJMEDIA_EVID_SYSERR;
         }
-		strm->scr_texS = SDL_CreateTexture(strm->renderer, sdl_format, SDL_TEXTUREACCESS_STREAMING, strm->rectS.w, strm->rectS.h);
-		//strm->scr_texS = SDL_CreateTexture(strm->renderer, sdl_format, SDL_TEXTUREACCESS_TARGET, strm->rectS.w, strm->rectS.h);
-        if (strm->scr_texS == NULL) {
-            sdl_log_err("scr_texS::SDL_CreateTexture()");
+
+        strm->sp.scr_texS = SDL_CreateTexture(strm->sp.renderer, sdl_format, SDL_TEXTUREACCESS_STREAMING, strm->sp.rect.w, strm->sp.rect.h);
+        if (strm->sp.scr_texS == NULL) {
+            sdl_log_err("scr_texP::SDL_CreateTexture()");
             return PJMEDIA_EVID_SYSERR;
         }
 
-		// ABChernic : ->rect4
-        strm->pitchP = strm->rectP.w * SDL_BYTESPERPIXEL(sdl_format);
-        strm->pitchS = strm->rectS.w * SDL_BYTESPERPIXEL(sdl_format);
+        // ABChernic : ->rect4
+        strm->sp.pitch  = strm->sp.rect.w * SDL_BYTESPERPIXEL(sdl_format);
+        strm->sp.pitchS = strm->sp.rectS.w * SDL_BYTESPERPIXEL(sdl_format);
     }
 
 
     /// ABChernic : 选择默认纹理四维
-    strm->thread_exit               = 0;
-    strm->thread_pause              = 0;
-    strm->toolbar.isToolBarShowed   = 0;
-    strm->toolbar.mPlay.isChecked   = BTUUON_UNCHECKED;
-    strm->toolbar.mClose.isChecked  = BTUUON_UNCHECKED;
-    strm->toolbar.mPlay.pSrcR       = &strm->toolbar.mPlay.btnRect.mouseover[BTUUON_UNCHECKED];
-    strm->toolbar.mClose.pSrcR      = &strm->toolbar.mClose.btnRect.mouseover[BTUUON_UNCHECKED];
+    strm->sp.thread_exit               = 0;
+    strm->sp.thread_pause              = 0;
+    strm->sp.toolbar.isToolBarShowed   = 0;
+    strm->sp.toolbar.mPlay.isChecked   = BTUUON_UNCHECKED;
+    strm->sp.toolbar.mClose.isChecked  = BTUUON_UNCHECKED;
+    strm->sp.toolbar.mPlay.pSrcR       = &strm->sp.toolbar.mPlay.btnRect.mouseover[BTUUON_UNCHECKED];
+    strm->sp.toolbar.mClose.pSrcR      = &strm->sp.toolbar.mClose.btnRect.mouseover[BTUUON_UNCHECKED];
 
     /// ABChernic : 设置按钮四维
     sdl_toolbar_make_play (strm, strm->param.disp_size.w, strm->param.disp_size.h, 80, 80);
@@ -1355,40 +1299,40 @@ static pj_status_t sdl_create_rend          (struct sdl_stream * strm, pjmedia_f
     if (!vfi || !sdl_info)
         return PJMEDIA_EVID_BADFORMAT;
 
-    strm->vafp.size = fmt->det.vid.size;
-    strm->vafp.buffer = NULL;
-    if (vfi->apply_fmt(vfi, &strm->vafp) != PJ_SUCCESS)
+    strm->sp.vafp.size = fmt->det.vid.size;
+    strm->sp.vafp.buffer = NULL;
+    if (vfi->apply_fmt(vfi, &strm->sp.vafp) != PJ_SUCCESS)
         return PJMEDIA_EVID_BADFORMAT;
 
     vfd = pjmedia_format_get_video_format_detail(fmt, PJ_TRUE);
 
-	// ABChernic : ->rect2
-    strm->rectP.x = 0;
-	strm->rectP.y = 0;
-    strm->rectP.w = (Uint16)vfd->size.w;
-    strm->rectP.h = (Uint16)vfd->size.h;
+    // ABChernic : ->rect2
+    strm->sp.rect.x = 0;
+    strm->sp.rect.y = 0;
+    strm->sp.rect.w = (Uint16)vfd->size.w;
+    strm->sp.rect.h = (Uint16)vfd->size.h;
+    
+    strm->sp.rectS.x = 0;
+    strm->sp.rectS.y = 0;
+    strm->sp.rectS.w = (Uint16)vfd->size.w;
+    strm->sp.rectS.h = (Uint16)vfd->size.h;
 
-    strm->rectS.x = 0;
-	strm->rectS.y = 0;
-    strm->rectS.w = (Uint16)vfd->size.w;
-    strm->rectS.h = (Uint16)vfd->size.h;
-
-	// ABChernic : ->rect3
+    // ABChernic : ->rect3
     if (strm->param.disp_size.w == 0)
-        strm->param.disp_size.w = strm->rectP.w;
+        strm->param.disp_size.w = strm->sp.rect.w;
     if (strm->param.disp_size.h == 0)
-        strm->param.disp_size.h = strm->rectP.h;
+        strm->param.disp_size.h = strm->sp.rect.h;
 
-	// ABChernic : ->dstrect1
-    strm->dstrectP.x = 0;
-	strm->dstrectP.y = 0;
-    strm->dstrectP.w = (Uint16)(strm->param.disp_size.w);
-    strm->dstrectP.h = (Uint16)(strm->param.disp_size.h);
-
-    strm->dstrectS.x = (Uint16)(strm->param.disp_size.w);
-	strm->dstrectS.y = (Uint16)(strm->param.disp_size.h);
-    strm->dstrectS.w = (Uint16)(strm->param.disp_size.w);
-    strm->dstrectS.h = (Uint16)(strm->param.disp_size.h);
+    // ABChernic : ->dstrect1
+    strm->sp.dstrect.x = 0;
+    strm->sp.dstrect.y = 0;
+    strm->sp.dstrect.w = (Uint16)(strm->param.disp_size.w);
+    strm->sp.dstrect.h = (Uint16)(strm->param.disp_size.h);
+    
+    strm->sp.dstrectS.x = 0;
+    strm->sp.dstrectS.y = 0;
+    strm->sp.dstrectS.w = (Uint16)(strm->param.disp_size.w);
+    strm->sp.dstrectS.h = (Uint16)(strm->param.disp_size.h);
 
     sdl_destroy(strm);
 
@@ -1398,7 +1342,7 @@ static pj_status_t sdl_create_rend          (struct sdl_stream * strm, pjmedia_f
     }
 #endif /* PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL */
     
-	/// ABChernic : X2
+    /// ABChernic : X2
     return sdl_create_window(strm, (strm->param.flags & PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW), sdl_info->sdl_format, &strm->param.window);
 }
 static pj_status_t sdl_create               (void *data){
@@ -1409,50 +1353,54 @@ static pj_status_t sdl_create               (void *data){
 
 /// 设置Preview的显示区域
 static pj_status_t repose_previw(struct sdl_stream *strm, pjmedia_coord *pos){
-	strm->dstrectP.x = pos->x;
-	strm->dstrectP.y = pos->y;
+    strm->sp.dstrect.x = pos->x;
+    strm->sp.dstrect.y = pos->y;
     return PJ_SUCCESS;
 }
 static pj_status_t resize_previw(struct sdl_stream *strm, pjmedia_rect_size *size){
-    strm->dstrectP.w = size->w;
-    strm->dstrectP.h = size->h;
+    strm->sp.dstrect.w = size->w;
+    strm->sp.dstrect.h = size->h;
     return PJ_SUCCESS;
 }
 /// 设置Stream的显示区域
 static pj_status_t repose_stream(struct sdl_stream *strm, pjmedia_coord *pos){
-    strm->dstrectS.x = pos->x;
-	strm->dstrectS.y = pos->y;
+    (strm);
+    (pos);
+    strm->sp.dstrectS.x = pos->x;
+    strm->sp.dstrectS.y = pos->y;
     return PJ_SUCCESS;
 }
 static pj_status_t resize_stream(struct sdl_stream *strm, pjmedia_rect_size *size){
-    strm->dstrectS.w = size->w;
-    strm->dstrectS.h = size->h;
+    (strm);
+    (size);
+    strm->sp.dstrectS.w = size->w;
+    strm->sp.dstrectS.h = size->h;
     return PJ_SUCCESS;
 }
 // 设置其他
 static pj_status_t resize_disp  (struct sdl_stream *strm, pjmedia_rect_size *new_disp_size){
     pj_memcpy(&strm->param.disp_size, new_disp_size, sizeof(strm->param.disp_size));
-	// 调用 PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE 会修改值strm->param.disp_size
+    // 调用 PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE 会修改值strm->param.disp_size
 /*
-    if (strm->scr_texP) {       
-		// ABChernic : ->dstrect2
-		// 这里是根据窗口设置显示区大小
-        strm->dstrectP.x = strm->dstrectP.y = 0;
-        strm->dstrectP.w = (Uint16)strm->param.disp_size.w;
-        strm->dstrectP.h = (Uint16)strm->param.disp_size.h;
+    if (strm->sp.scr_tex) {       
+        // ABChernic : ->dstrect2
+        // 这里是根据窗口设置显示区大小
+        strm->sp.dstrect.x = strm->sp.dstrect.y = 0;
+        strm->sp.dstrect.w = (Uint16)strm->param.disp_size.w;
+        strm->sp.dstrect.h = (Uint16)strm->param.disp_size.h;
 
-		// ABChernic : ->dstrect2
-        SDL_RenderSetViewport(strm->renderer, &strm->dstrectP);                  
+        // ABChernic : ->dstrect2
+        SDL_RenderSetViewport(strm->sp.renderer, &strm->sp.dstrect);                  
     }
-    if (strm->scr_texS) {       
-		// ABChernic : ->dstrect2
-		// 这里是根据窗口设置显示区大小
-        strm->dstrectS.x = strm->dstrectP.y = 0;
+    if (strm->sp.scr_texS) {       
+        // ABChernic : ->dstrect2
+        // 这里是根据窗口设置显示区大小
+        strm->dstrectS.x = strm->sp.dstrect.y = 0;
         strm->dstrectS.w = (Uint16)strm->param.disp_size.w;
         strm->dstrectS.h = (Uint16)strm->param.disp_size.h;
 
-		// ABChernic : ->dstrect2
-        SDL_RenderSetViewport(strm->renderer, &strm->dstrectS);                  
+        // ABChernic : ->dstrect2
+        SDL_RenderSetViewport(strm->sp.renderer, &strm->dstrectS);                  
     }
 */
 
@@ -1477,7 +1425,7 @@ static pj_status_t change_format(struct sdl_stream *strm, pjmedia_format *new_fm
 
 
 /// ABChernic : 2018-01-04 >>> 前提函数 结构体
-struct strm_cap{
+struct strm_cap {
     struct sdl_stream   *strm;
     pjmedia_vid_dev_cap  cap;
     union {
@@ -1489,7 +1437,6 @@ struct strm_dir {
     struct sdl_stream   *strm;
     pj_str_t            dir;
 };
-
 struct strm_win {
     struct sdl_stream   *strm;
     union {
@@ -1497,19 +1444,16 @@ struct strm_win {
         const void      *cpval;
     } pval;
 };
-
-static pj_status_t get_sdl_window(void *data){
+static pj_status_t get_sdl_window   (void *data){
     struct strm_win *swin = (struct strm_win *)data;
     struct sdl_stream *strm = swin->strm;
     void *pval = swin->pval.pval;
 
-	SDL_Window *wnd = (SDL_Window *)pval;
-
-	pval = (void*)strm->window;
+    pval = (void*)strm->sp.window;
 
     return PJ_SUCCESS;
 }
-static pj_status_t get_cap(void *data){
+static pj_status_t get_cap          (void *data){
     struct strm_cap *scap = (struct strm_cap *)data;
     struct sdl_stream *strm = scap->strm;
     pjmedia_vid_dev_cap cap = scap->cap;
@@ -1520,7 +1464,7 @@ static pj_status_t get_cap(void *data){
     SDL_SysWMinfo info;
     SDL_VERSION(&info.version);
 
-    if (SDL_GetWindowWMInfo(strm->window, &info)) {
+    if (SDL_GetWindowWMInfo(strm->sp.window, &info)) {
         pjmedia_vid_dev_hwnd *wnd = (pjmedia_vid_dev_hwnd *)pval;
         if (0) { }
 #if defined(SDL_VIDEO_DRIVER_WINDOWS)
@@ -1552,19 +1496,19 @@ static pj_status_t get_cap(void *data){
     } else
         return PJMEDIA_EVID_INVCAP;
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_POSITION) {
-        SDL_GetWindowPosition(strm->window, &((pjmedia_coord *)pval)->x,
+        SDL_GetWindowPosition(strm->sp.window, &((pjmedia_coord *)pval)->x,
                               &((pjmedia_coord *)pval)->y);
     return PJ_SUCCESS;
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE) {
-        SDL_GetWindowSize(strm->window, (int *)&((pjmedia_rect_size *)pval)->w,
+        SDL_GetWindowSize(strm->sp.window, (int *)&((pjmedia_rect_size *)pval)->w,
                           (int *)&((pjmedia_rect_size *)pval)->h);
     return PJ_SUCCESS;
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_HIDE) {
-    Uint32 flag = SDL_GetWindowFlags(strm->window);
+    Uint32 flag = SDL_GetWindowFlags(strm->sp.window);
     *((pj_bool_t *)pval) = (flag & SDL_WINDOW_HIDDEN)? PJ_TRUE: PJ_FALSE;
     return PJ_SUCCESS;
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW_FLAGS) {
-    Uint32 flag = SDL_GetWindowFlags(strm->window);
+    Uint32 flag = SDL_GetWindowFlags(strm->sp.window);
         unsigned *wnd_flags = (unsigned *)pval;
         if (!(flag & SDL_WINDOW_BORDERLESS))
             *wnd_flags |= PJMEDIA_VID_DEV_WND_BORDER;
@@ -1575,232 +1519,248 @@ static pj_status_t get_cap(void *data){
 
     return PJMEDIA_EVID_INVCAP;
 }
-static pj_status_t set_cap(void *data){
+static pj_status_t set_cap          (void *data){
     struct strm_cap *scap = (struct strm_cap *)data;
     struct sdl_stream *strm = scap->strm;
     pjmedia_vid_dev_cap cap = scap->cap;
     const void *pval = scap->pval.cpval;
 
-	// 假如是设置左上顶角
-	// pjsua_vid_win_set_pos->pjmedia_vid_dev_stream_set_cap->set_cap(PJMEDIA_VID_DEV_CAP_OUTPUT_POSITION)
+    // 假如是设置左上顶角
+    // pjsua_vid_win_set_pos->pjmedia_vid_dev_stream_set_cap->set_cap(PJMEDIA_VID_DEV_CAP_OUTPUT_POSITION)
     if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_POSITION) {
-		/**
-		 * Setting window's position when the window is hidden also sets
-		 * the window's flag to shown (while the window is, actually,
-		 * still hidden). This causes problems later when setting/querying
-		 * the window's visibility.
-		 * See ticket #1429 (http://trac.pjsip.org/repos/ticket/1429)
-		 */
-		Uint32 flag = SDL_GetWindowFlags(strm->window);
-		if (flag & SDL_WINDOW_HIDDEN)
-			SDL_ShowWindow(strm->window);
+        /**
+         * Setting window's position when the window is hidden also sets
+         * the window's flag to shown (while the window is, actually,
+         * still hidden). This causes problems later when setting/querying
+         * the window's visibility.
+         * See ticket #1429 (http://trac.pjsip.org/repos/ticket/1429)
+         */
+        Uint32 flag = SDL_GetWindowFlags(strm->sp.window);
+        if (flag & SDL_WINDOW_HIDDEN)
+            SDL_ShowWindow(strm->sp.window);
 
-		SDL_SetWindowPosition(strm->window, ((pjmedia_coord *)pval)->x,((pjmedia_coord *)pval)->y);
+        SDL_SetWindowPosition(strm->sp.window, ((pjmedia_coord *)pval)->x,((pjmedia_coord *)pval)->y);
 
-		if (flag & SDL_WINDOW_HIDDEN)
-			SDL_HideWindow(strm->window);
+        if (flag & SDL_WINDOW_HIDDEN)
+            SDL_HideWindow(strm->sp.window);
 
-		return PJ_SUCCESS;
-	// 假如是设置边长
+        return PJ_SUCCESS;
+    // 假如是设置边长
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_HIDE) {
         if (*(pj_bool_t *)pval)
-            SDL_HideWindow(strm->window);
+            SDL_HideWindow(strm->sp.window);
         else
-            SDL_ShowWindow(strm->window);
-		return PJ_SUCCESS;
+            SDL_ShowWindow(strm->sp.window);
+        return PJ_SUCCESS;
     } else if (cap == PJMEDIA_VID_DEV_CAP_FORMAT) {
         pj_status_t status;
 
         status = change_format(strm, (pjmedia_format *)pval);
-		if (status != PJ_SUCCESS) {
-			pj_status_t status_;
-	        
-			/**
-			 * Failed to change the output format. Try to revert
-			 * to its original format.
-			 */
-				status_ = change_format(strm, &strm->param.fmt);
-			if (status_ != PJ_SUCCESS) {
-			/**
-			 * This means that we failed to revert to our
-			 * original state!
-			 */
-			status = PJMEDIA_EVID_ERR;
-			}
-		}
-		return status;
-	// pjsua_vid_win_set_pos->pjmedia_vid_dev_stream_set_cap->set_cap(PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE)
+        if (status != PJ_SUCCESS) {
+            pj_status_t status_;
+            
+            /**
+             * Failed to change the output format. Try to revert
+             * to its original format.
+             */
+                status_ = change_format(strm, &strm->param.fmt);
+            if (status_ != PJ_SUCCESS) {
+            /**
+             * This means that we failed to revert to our
+             * original state!
+             */
+            status = PJMEDIA_EVID_ERR;
+            }
+        }
+        return status;
+    // pjsua_vid_win_set_pos->pjmedia_vid_dev_stream_set_cap->set_cap(PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE)
     } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_RESIZE) {
-		pjmedia_rect_size *new_size = (pjmedia_rect_size *)pval;
-		SDL_SetWindowSize(strm->window, new_size->w, new_size->h);
-		return resize_disp(strm, new_size);
-	} else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW) {
-		pjmedia_vid_dev_hwnd *hwnd = (pjmedia_vid_dev_hwnd*)pval;
-		pj_status_t status = PJ_SUCCESS;
-		sdl_fmt_info *sdl_info = get_sdl_format_info((pjmedia_format_id)(strm->param.fmt.id));
-		/* Re-init SDL */
-		status = sdl_destroy_all(strm);
-		if (status != PJ_SUCCESS)
-			return status;  
+        pjmedia_rect_size *new_size = (pjmedia_rect_size *)pval;
+        SDL_SetWindowSize(strm->sp.window, new_size->w, new_size->h);
+        return resize_disp(strm, new_size);
+    } else if (cap == PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW) {
+        pjmedia_vid_dev_hwnd *hwnd = (pjmedia_vid_dev_hwnd*)pval;
+        pj_status_t status = PJ_SUCCESS;
+        sdl_fmt_info *sdl_info = get_sdl_format_info((pjmedia_format_id)(strm->param.fmt.id));
+        /* Re-init SDL */
+        status = sdl_destroy_all(strm);
+        if (status != PJ_SUCCESS)
+            return status;  
 
-		status = sdl_create_window(strm, PJ_TRUE, sdl_info->sdl_format, hwnd);
-			PJ_LOG(4, (THIS_FILE, "Re-initializing SDL with native window"
-						  " %d: %s", hwnd->info.window,
-								  (status == PJ_SUCCESS? "success": "failed")));
-		return status;
-	// ABChernic : previw
-	} else if (cap == PJMEDIA_VID_DEV_CAP_PREVIW_POS) {
-		pjmedia_coord *tmp_pos = (pjmedia_coord *)pval;
-		strm->param.previw_pos.x = tmp_pos->x;
-		strm->param.previw_pos.y = tmp_pos->y;
-		return repose_previw(strm, tmp_pos); 
-	} else if (cap == PJMEDIA_VID_DEV_CAP_PREVIW_SIZE) {
-		pjmedia_rect_size *tmp_size = (pjmedia_rect_size *)pval;
-		strm->param.previw_size.w = tmp_size->w;
-		strm->param.previw_size.h = tmp_size->h;
-		return resize_previw(strm, tmp_size);
-	// ABChernic : stream
-	} else if (cap == PJMEDIA_VID_DEV_CAP_STREAM_POS) {
-		pjmedia_coord *tmp_pos = (pjmedia_coord *)pval;
-		strm->param.stream_pos.x = tmp_pos->x;
-		strm->param.stream_pos.y = tmp_pos->y;
-		return repose_stream(strm, tmp_pos);
-	} else if (cap == PJMEDIA_VID_DEV_CAP_STREAM_SIZE) {
-		pjmedia_rect_size *tmp_size = (pjmedia_rect_size *)pval;
-		strm->param.stream_size.w = tmp_size->w;
-		strm->param.stream_size.h = tmp_size->h;
-		return resize_stream(strm, tmp_size);
-	} else if (cap == PJMEDIA_VID_DEV_CAP_BUTTON_SIZE) {
-		pj_status_t status = PJ_SUCCESS;
-		pjmedia_rect_size *new_size = (pjmedia_rect_size *)pval;
-		strm->toolbar.size.w = new_size->w;
-		strm->toolbar.size.h = new_size->h;
-		return status; 
-	}
+        status = sdl_create_window(strm, PJ_TRUE, sdl_info->sdl_format, hwnd);
+            PJ_LOG(4, (THIS_FILE, "Re-initializing SDL with native window"
+                          " %d: %s", hwnd->info.window,
+                                  (status == PJ_SUCCESS? "success": "failed")));
+        return status;
+    // ABChernic : previw
+    } else if (cap == PJMEDIA_VID_DEV_CAP_PREVIW_POS) {
+        pjmedia_coord *tmp_pos = (pjmedia_coord *)pval;
+        strm->param.previw_pos.x = tmp_pos->x;
+        strm->param.previw_pos.y = tmp_pos->y;
+        return repose_previw(strm, tmp_pos); 
+    } else if (cap == PJMEDIA_VID_DEV_CAP_PREVIW_SIZE) {
+        pjmedia_rect_size *tmp_size = (pjmedia_rect_size *)pval;
+        strm->param.previw_size.w = tmp_size->w;
+        strm->param.previw_size.h = tmp_size->h;
+        return resize_previw(strm, tmp_size);
+    // ABChernic : stream
+    } else if (cap == PJMEDIA_VID_DEV_CAP_STREAM_POS) {
+        pjmedia_coord *tmp_pos = (pjmedia_coord *)pval;
+        strm->param.stream_pos.x = tmp_pos->x;
+        strm->param.stream_pos.y = tmp_pos->y;
+        return repose_stream(strm, tmp_pos);
+    } else if (cap == PJMEDIA_VID_DEV_CAP_STREAM_SIZE) {
+        pjmedia_rect_size *tmp_size = (pjmedia_rect_size *)pval;
+        strm->param.stream_size.w = tmp_size->w;
+        strm->param.stream_size.h = tmp_size->h;
+        return resize_stream(strm, tmp_size);
+    } else if (cap == PJMEDIA_VID_DEV_CAP_BUTTON_SIZE) {
+        pj_status_t status = PJ_SUCCESS;
+        pjmedia_rect_size *new_size = (pjmedia_rect_size *)pval;
+        strm->sp.toolbar.size.w = new_size->w;
+        strm->sp.toolbar.size.h = new_size->h;
+        return status; 
+    }
     return PJMEDIA_EVID_INVCAP;
 }
-static pj_status_t set_dir(void *data){
-    struct strm_dir		*sdir		= (struct strm_dir *)data;
-    struct sdl_stream	*strm		= sdir->strm;
-    pj_str_t			dir			= sdir->dir;
-    pj_str_t			full_dir;
-    pj_str_t			play_dir;
-    pj_str_t			close_dir;
-	char				strbuf[100];
+static pj_status_t set_dir          (void *data){
+    struct strm_dir     *sdir       = (struct strm_dir *)data;
+    struct sdl_stream   *strm       = sdir->strm;
+    pj_str_t            dir         = sdir->dir;
+    pj_str_t            full_dir;
+    pj_str_t            play_dir;
+    pj_str_t            close_dir;
+    char                strbuf[100];
 
     if (dir.slen == 0) {
         PJ_LOG(4, (THIS_FILE, "<running_dir> is null, may be we can't find the bmp of buttons."));
     }
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "BMP Dir is %s", &strbuf );
 
-    strm->running_dir=dir;
-	pj_ansi_snprintf(strbuf, sizeof(strbuf),"%s\\button.bmp", strm->running_dir.ptr );
+    strm->sp.running_dir=dir;
+    pj_ansi_snprintf(strbuf, sizeof(strbuf),"%s\\button.bmp", strm->sp.running_dir.ptr );
 
-	full_dir  = pj_str(strbuf);
-	play_dir  = pj_str(full_dir.ptr);
-	close_dir = pj_str(full_dir.ptr);
+    full_dir  = pj_str(strbuf);
+    play_dir  = pj_str(full_dir.ptr);
+    close_dir = pj_str(full_dir.ptr);
 
-	sdl_toolbar_load_play (strm, play_dir.ptr );
-	sdl_toolbar_load_close(strm, close_dir.ptr );
+    sdl_toolbar_load_play (strm, play_dir.ptr );
+    sdl_toolbar_load_close(strm, close_dir.ptr );
 
     return 0;
 }
-
-
-
 typedef struct sdl_mixstream{
-	struct sdl_stream *strmP;
-	struct sdl_stream *strmS;
+    struct sdl_stream *strmP;
+    struct sdl_stream *strmS;
 }sdl_mixstream;
-
-static pj_status_t put_frame (void *data){
+static pj_status_t put_frame        (void *data){
     sdl_mixstream *mixstream = (sdl_mixstream *)data;
 
     struct sdl_stream *strmP = mixstream->strmP;
     struct sdl_stream *strmS = mixstream->strmS;
 
-	struct sdl_stream *strm  = strmP;
+    struct sdl_stream *strm  = strmP;
 
     const pjmedia_frame *frameP = NULL;
     const pjmedia_frame *frameS = NULL;
 
-	int got_new_frameP = 1;
-	int got_new_frameS = 1;
+    int got_new_frameP = 1;
+    int got_new_frameS = 1;
 
-	if(strmP){
-		frameP = strmP->frame;
-	}
-	if(strmP){
-		frameS = strmS->frame;
-	}
+    if(strmP){
+        frameP = strmP->sp.frame;
+    }
+    if(strmS){
+        frameS = strmS->sp.frame;
+    }
 
     //got_new_frameP = strmP->got_new_frame
     //got_new_frameS = strmS->got_new_frame;
 
     if (frameP || frameS) {
-		SDL_RenderClear  (strm->renderer);
+        SDL_RenderClear  (strm->sp.renderer);
 
-		if(got_new_frameP){
-			SDL_UpdateTexture(strm->scr_texP, NULL,           frameP->buf,  strmP->pitchP);
-			SDL_RenderCopy   (strm->renderer, strm->scr_texP, NULL,         &strmP->dstrectP);
-		}
-
-		if(got_new_frameS){
-			SDL_UpdateTexture(strm->scr_texS, NULL,           frameS->buf,  strmS->pitchP);
-			SDL_RenderCopy   (strm->renderer, strm->scr_texS, NULL,         &strmS->dstrectS);
-		}
-
-		sdl_toolbar_update(strm);
-        if(strm->toolbar.isToolBarShowed){
-            sdl_toolbar_show      (strm); // update strm->toolbar.mBlankRect
-            sdl_toolbar_show_play (strm); // update strm->toolbar.mClose.decR
-            sdl_toolbar_show_close(strm); // update strm->toolbar.mClose.decR
+        if(got_new_frameP){
+            SDL_UpdateTexture(strm->sp.scr_tex,  NULL,       frameP->buf,  strmP->sp.pitch);
+            SDL_RenderCopy   (strm->sp.renderer, strm->sp.scr_tex, NULL, &strmP->sp.dstrect);
         }
 
-        SDL_RenderPresent(strm->renderer);
+        if(got_new_frameS){
+            SDL_UpdateTexture(strm->sp.scr_tex,  NULL,       frameS->buf,  strmS->sp.pitch);
+            SDL_RenderCopy   (strm->sp.renderer, strm->sp.scr_tex, NULL, &strmS->sp.dstrect);
+        }
+
+        sdl_toolbar_update(strm);
+        if(strm->sp.toolbar.isToolBarShowed){
+            sdl_toolbar_show      (strm); // update strm->sp.toolbar.mBlankRect
+            sdl_toolbar_show_play (strm); // update strm->sp.toolbar.mClose.decR
+            sdl_toolbar_show_close(strm); // update strm->sp.toolbar.mClose.decR
+        }
+
+        SDL_RenderPresent(strm->sp.renderer);
     }
 
     return PJ_SUCCESS;
 }
 static pj_status_t put_frame_prwviw (void *data){
     struct sdl_stream *strm = (struct sdl_stream *)data;
-    const pjmedia_frame *frame = strm->frame;
-	//SDL_Event UserEvent;
+    const pjmedia_frame *frame = strm->sp.frame;
 
-    if (strm->scr_texP && strm->scr_texS) {
-        SDL_UpdateTexture(strm->scr_texP, NULL, frame->buf, strm->pitchP);
-		SDL_UpdateTexture(strm->scr_texS, NULL, frame->buf, strm->pitchS);// 有猫腻
+    struct sdl_stream *pre_strm;
+    pjmedia_frame *pre_frame = strm->sp.frame;
+    int isRead = 0;
+    int Xpitch = 0;
 
-        SDL_RenderClear  (strm->renderer);
-		//SDL_RenderCopy   (strm->renderer, strm->scr_texS, NULL, &strm->dstrectS);	// NULL(3) means &strm->rectS
-
-		SDL_RenderCopy   (strm->renderer, strm->scr_texS, NULL, &strm->dstrectS);	// NULL(3) means &strm->rectS
-        SDL_RenderCopy   (strm->renderer, strm->scr_texP, NULL, &strm->dstrectP);		// NULL(3) means &strm->rectP
-
-		sdl_toolbar_update(strm);
-        if(strm->toolbar.isToolBarShowed){
-            sdl_toolbar_show      (strm); // update strm->toolbar.mBlankRect
-            sdl_toolbar_show_play (strm); // update strm->toolbar.mClose.decR
-            sdl_toolbar_show_close(strm); // update strm->toolbar.mClose.decR
+    pre_strm  = strm->sp.list_entry.prev->stream;
+    if(pre_strm && pre_strm->sp.is_running){
+        pre_frame = pre_strm->sp.frame;
+        if(pre_frame){
+            if (pre_frame->size==0 || pre_frame->buf==NULL || pre_frame->size < pre_strm->sp.vafp.framebytes){
+                isRead = 0;
+            }
+            else{
+                isRead = 1;
+            }
+        }else
+        {
+            isRead = 0;
         }
-        SDL_RenderPresent(strm->renderer);
+    }else{
+        isRead = 0;
     }
 
-    //ABChernic : MIX
-	// 这里默认两个视频容器同时存在才绘制
-    //ABChernic : MIX
-    //ABChernic : MIX
-	/*
-	if (strm->scr_texP) {
-		//SDL_UpdateTexture(strm->scr_texS, NULL, frame->buf, strm->pitchP);
-		//SDL_UpdateTexture(strm->scr_texS, NULL, frameS->buf, strm->pitchS);
-		SDL_UpdateTexture(strm->scr_texP, NULL, frame->buf, strm->pitchP);
-		//UserEvent.type = SFM_REFRESH_PRIVIW_EVENT;
-		UserEvent.type = SFM_REFRESH_COMPLX_EVENT;//SFM_REFRESH_PRIVIW_EVENT;
-		UserEvent.user.data1 = (void*)strm;
-		UserEvent.user.data2 = NULL;
-		SDL_PushEvent(&UserEvent);
-    }*/
+    if (strm->sp.scr_tex && strm->sp.scr_texS) {
+        SDL_UpdateTexture(strm->sp.scr_tex,  NULL, frame->buf, strm->sp.pitch);
+
+        if(isRead && pre_frame && pre_frame->buf!=NULL){
+            //SDL_UpdateTexture(strm->sp.scr_texS, NULL, pre_frame->buf, pre_strm->sp.pitch);
+            //strm->sp.pitchS = strm->sp.rectS.w * SDL_BYTESPERPIXEL(sdl_format);
+
+            //SDL_UpdateTexture(strm->sp.scr_texS, NULL, pre_frame->buf, strm->sp.pitchS);
+            //Xpitch = pre_frame->size;
+            //Xpitch = pre_frame->size * SDL_BYTESPERPIXEL(sdl_format);
+            //Xpitch = pre_strm->sp.pitch;
+            //SDL_UpdateTexture(strm->sp.scr_texS, NULL, pre_frame->buf, 2);
+
+            //SDL_UpdateTexture(strm->sp.scr_texS, NULL, pre_frame->buf, 3);
+            SDL_UpdateTexture(strm->sp.scr_texS, NULL, pre_frame->buf, 192);
+        }
+
+        SDL_RenderClear  (strm->sp.renderer);
+
+        if(isRead && pre_frame && pre_frame->buf!=NULL ){
+        SDL_RenderCopy   (strm->sp.renderer, strm->sp.scr_texS, NULL,                   &strm->sp.dstrectS);
+        }
+        SDL_RenderCopy   (strm->sp.renderer, strm->sp.scr_tex,  NULL/*&strm->sp.rect*/, &strm->sp.dstrect);
+
+        sdl_toolbar_update(strm);
+        if(strm->sp.toolbar.isToolBarShowed){
+            sdl_toolbar_show      (strm); // update strm->sp.toolbar.mBlankRect
+            sdl_toolbar_show_play (strm); // update strm->sp.toolbar.mClose.decR
+            sdl_toolbar_show_close(strm); // update strm->sp.toolbar.mClose.decR
+        }
+        SDL_RenderPresent(strm->sp.renderer);
+    }
 
 #if PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
     else if (strm->param.rend_id == OPENGL_DEV_IDX && strm->texture) {
@@ -1817,7 +1777,7 @@ static pj_status_t put_frame_prwviw (void *data){
     glTexCoord2f(1, 1);
         glVertex2i(strm->param.disp_size.w, strm->param.disp_size.h);
     glEnd();
-        SDL_GL_SwapWindow(strm->window);
+        SDL_GL_SwapWindow(strm->sp.window);
     }
 #endif 
 
@@ -1825,33 +1785,30 @@ static pj_status_t put_frame_prwviw (void *data){
 }
 static pj_status_t put_frame_stream (void *data){
     struct sdl_stream *strm = (struct sdl_stream *)data;
-    const pjmedia_frame *frame	= NULL;
-	SDL_Window   * window		= NULL;
-	SDL_Renderer * Renderer		= NULL;
-	SDL_Texture  * Texture		= NULL;
-	int pitch                   = 0;
+    const pjmedia_frame *frame  = NULL;
+    SDL_Renderer * Renderer     = NULL;
+    SDL_Texture  * Texture      = NULL;
+    int pitch                   = 0;
 
-    frame     = strm->frame;
-	window    = strm->windowP;
-	Renderer  = strm->renderer;
-	Texture   = strm->scr_texS;
-	pitch     = strm->pitchS;
-	
+    frame     = strm->sp.frame;
+    Renderer  = strm->sp.renderer;
+    Texture   = strm->sp.scr_tex;
+    pitch     = strm->sp.pitch;
+    
 
-	//if(windowP)
-		//RendererP = SDL_GetRenderer(windowP);
-	//if(RendererP)
-		//TextureP  = SDL_GetRenderTarget(RendererP);
-    //ABChernic : MIX
-	//if (TextureP)
-		//SDL_UpdateTexture(TextureP, NULL, frame->buf, strm->pitchS);
+    //if(windowP)
+        //RendererP = SDL_GetRenderer(windowP);
+    //if(RendererP)
+        //TextureP  = SDL_GetRenderTarget(RendererP);
+    //if (TextureP)
+        //SDL_UpdateTexture(TextureP, NULL, frame->buf, pitch);
 
-	SDL_UpdateTexture(Texture, NULL, frame->buf, pitch);
-	if (Texture) {
-		SDL_RenderClear  (Renderer);
-		SDL_RenderCopy   (Renderer, Texture, NULL, NULL);
-		SDL_RenderPresent(Renderer);
-	}
+    SDL_UpdateTexture(Texture, NULL, frame->buf, pitch);//192
+    if (Texture) {
+        SDL_RenderClear  (Renderer);
+        SDL_RenderCopy   (Renderer, Texture, NULL, NULL);
+        SDL_RenderPresent(Renderer);
+    }
  
 
 #if PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
@@ -1869,7 +1826,7 @@ static pj_status_t put_frame_stream (void *data){
     glTexCoord2f(1, 1);
         glVertex2i(strm->param.disp_size.w, strm->param.disp_size.h);
     glEnd();
-        SDL_GL_SwapWindow(strm->window);
+        SDL_GL_SwapWindow(strm->sp.window);
     }
 #endif 
 
@@ -1879,8 +1836,8 @@ static pj_status_t put_frame_stream (void *data){
 
 
 /// ABChernic : 2018-01-04 >>> 
-/* API: Put frame from stream */	//############################################# O1 sdl_stream_get_param
-static pj_status_t sdl_stream_get_param	(pjmedia_vid_dev_stream *s, pjmedia_vid_dev_param *pi){
+/* API: Put frame from stream */    //############################################# O1 sdl_stream_get_param
+static pj_status_t sdl_stream_get_param (pjmedia_vid_dev_stream *s, pjmedia_vid_dev_param *pi){
     struct sdl_stream *strm = (struct sdl_stream*)s;
 
     PJ_ASSERT_RETURN(strm && pi, PJ_EINVAL);
@@ -1917,7 +1874,7 @@ static pj_status_t sdl_stream_get_param	(pjmedia_vid_dev_stream *s, pjmedia_vid_
 }
 
 /* API: get_cap               */    //############################################# O2 sdl_stream_get_cap //get_cap
-static pj_status_t sdl_stream_get_cap	(pjmedia_vid_dev_stream *s, pjmedia_vid_dev_cap cap, void *pval){
+static pj_status_t sdl_stream_get_cap   (pjmedia_vid_dev_stream *s, pjmedia_vid_dev_cap cap, void *pval){
     struct sdl_stream *strm = (struct sdl_stream*)s;
     struct strm_cap scap;
     pj_status_t status;
@@ -1928,13 +1885,13 @@ static pj_status_t sdl_stream_get_cap	(pjmedia_vid_dev_stream *s, pjmedia_vid_de
     scap.cap = cap;
     scap.pval.pval = pval;
 
-    job_queue_post_job(strm->sf->jq, get_cap, &scap, 0, &status);
+    job_queue_post_job(strm->sp.sf->jq, get_cap, &scap, 0, &status);
 
     return status;
 }
 
 /* API: get_cap               */    //############################################# O3 sdl_stream_set_cap //set_cap
-static pj_status_t sdl_stream_set_cap	(pjmedia_vid_dev_stream *s, pjmedia_vid_dev_cap cap, const void *pval){
+static pj_status_t sdl_stream_set_cap   (pjmedia_vid_dev_stream *s, pjmedia_vid_dev_cap cap, const void *pval){
     struct sdl_stream *strm = (struct sdl_stream*)s;
     struct strm_cap scap;
     pj_status_t status;
@@ -1945,7 +1902,7 @@ static pj_status_t sdl_stream_set_cap	(pjmedia_vid_dev_stream *s, pjmedia_vid_de
     scap.cap = cap;
     scap.pval.cpval = pval;
 
-    job_queue_post_job(strm->sf->jq, set_cap, &scap, 0, &status);
+    job_queue_post_job(strm->sp.sf->jq, set_cap, &scap, 0, &status);
 
     return status;
 }
@@ -1953,46 +1910,46 @@ static pj_status_t sdl_stream_set_cap	(pjmedia_vid_dev_stream *s, pjmedia_vid_de
 
 
 
-/* API: Start stream. */		    //############################################# O4 sdl_stream_start
+/* API: Start stream. */            //############################################# O4 sdl_stream_start
 static pj_status_t sdl_stream_start(pjmedia_vid_dev_stream *strm){
     struct sdl_stream *stream = (struct sdl_stream*)strm;
 
     PJ_LOG(4, (THIS_FILE, "Starting sdl video stream"));
 
-    stream->is_running = PJ_TRUE;
+    stream->sp.is_running = PJ_TRUE;
 
     return PJ_SUCCESS;
 }
 
-/* API: Put frame from stream */	//############################################# O6 sdl_stream_put_frame
-static pj_status_t sdl_stream_put_frame	(pjmedia_vid_dev_stream *strm, const pjmedia_frame *frame){
+/* API: Put frame from stream */    //############################################# O6 sdl_stream_put_frame
+static pj_status_t sdl_stream_put_frame (pjmedia_vid_dev_stream *strm, const pjmedia_frame *frame){
     struct sdl_stream *stream = (struct sdl_stream*)strm;
     pj_status_t status = 0;
     //SDL_Thread *video_tid;
 
     (status);
-    stream->last_ts.u64 = frame->timestamp.u64;
+    stream->sp.last_ts.u64 = frame->timestamp.u64;
 
-    if (!stream->is_running)
+    if (!stream->sp.is_running)
     return PJ_EINVALIDOP;
 
     if (frame->size==0 || frame->buf==NULL ||
-    frame->size < stream->vafp.framebytes)
+    frame->size < stream->sp.vafp.framebytes)
     return PJ_SUCCESS;
 
-    stream->frame = frame;
+    stream->sp.frame = frame;
     
-    job_queue_post_job(stream->sf->jq, put_frame, strm, 0, &status);
+    job_queue_post_job(stream->sp.sf->jq, put_frame, strm, 0, &status);
     
     return status;
 }
-/* API: Stop stream. */				//############################################# O7 sdl_stream_stop
-static pj_status_t sdl_stream_stop		(pjmedia_vid_dev_stream *strm){
+/* API: Stop stream. */             //############################################# O7 sdl_stream_stop
+static pj_status_t sdl_stream_stop      (pjmedia_vid_dev_stream *strm){
     struct sdl_stream *stream = (struct sdl_stream*)strm;
 
     PJ_LOG(4, (THIS_FILE, "Stopping sdl video stream"));
 
-    stream->is_running = PJ_FALSE;
+    stream->sp.is_running = PJ_FALSE;
 
     return PJ_SUCCESS;
 }
@@ -2006,34 +1963,34 @@ static pj_status_t sdl_stream_destroy(pjmedia_vid_dev_stream *strm){
 
     sdl_stream_stop(strm);
 
-    job_queue_post_job(stream->sf->jq, sdl_destroy_all, strm, 0, &status);
+    job_queue_post_job(stream->sp.sf->jq, sdl_destroy_all, strm, 0, &status);
     if (status != PJ_SUCCESS)
         return status;
 
-    pj_mutex_lock(stream->sf->mutex);
-    if (!pj_list_empty(&stream->list_entry))
-    pj_list_erase(&stream->list_entry);
-    pj_mutex_unlock(stream->sf->mutex);
+    pj_mutex_lock(stream->sp.sf->mutex);
+    if (!pj_list_empty(&stream->sp.list_entry))
+    pj_list_erase(&stream->sp.list_entry);
+    pj_mutex_unlock(stream->sp.sf->mutex);
 
-    pj_pool_release(stream->pool);
+    pj_pool_release(stream->sp.pool);
 
     return PJ_SUCCESS;
 }
-/* API: set_dir. */			        //############################################# O9 sdl_stream_set_dir //set_dir
+/* API: set_dir. */                 //############################################# O9 sdl_stream_set_dir //set_dir
 static pj_status_t sdl_stream_pass_sdl_window(pjmedia_vid_dev_stream *s, pjmedia_vid_dev_stream *sP){
     struct sdl_stream *strm = (struct sdl_stream*)s;
-	struct sdl_stream *strmP = (struct sdl_stream*)sP;
-    pj_status_t status;
+    struct sdl_stream *strmP = (struct sdl_stream*)sP;
+    pj_status_t status = PJ_SUCCESS;
 
+    (strm);
+    (strmP);
     PJ_ASSERT_RETURN(s && sP, PJ_EINVAL);
 
-	strm->windowP   = strmP->window;
-	//strm->scr_texS  = strmP->scr_texS;
-	//strm->scr_texP  = strmP->scr_texP; // 内存泄漏?
-
-	//strm->windowS   = strmP->window;
-
-	//strm->pitchS    = strmP->pitchS;
+    //strm->sp.window   = strmP->window;
+    //strm->sp.scr_texS = strmP->scr_texS;
+    //strm->sp.scr_tex  = strmP->scr_texP;   // 内存泄漏?
+    //strm->sp.windowS   = strmP->window;
+    //strm->sp.pitchS    = strmP->pitchS;
 
     return status;
 }
@@ -2048,22 +2005,22 @@ static pj_status_t sdl_stream_set_dir(pjmedia_vid_dev_stream *s, const void *pva
     sdir.strm = strm;
     sdir.dir  = *(pj_str_t*)pval;
 
-    job_queue_post_job(strm->sf->jq, set_dir, &sdir, 0, &status);
+    job_queue_post_job(strm->sp.sf->jq, set_dir, &sdir, 0, &status);
 
     return status;
 }
-static pj_status_t sdl_stream_get_sdl_window(pjmedia_vid_dev_stream *s, const void *pval){
+static pj_status_t sdl_stream_get_sdl_window(pjmedia_vid_dev_stream *s, void *pval){
     /*
-	struct sdl_stream *strm = (struct sdl_stream*)s;
+    struct sdl_stream *strm = (struct sdl_stream*)s;
     pj_status_t status = PJ_SUCCESS;
-	SDL_Window *Xpval = (SDL_Window *)pval;
-	//int *Xpval = (SDL_Window *)pval;
-	//Xpval = a;
+    SDL_Window *Xpval = (SDL_Window *)pval;
+    //int *Xpval = (SDL_Window *)pval;
+    //Xpval = a;
 
 
     PJ_ASSERT_RETURN(s && pval, PJ_EINVAL);
-	pval = strm->window;
-	*/
+    pval = strm->sp.window;
+    */
 
     struct sdl_stream *strm = (struct sdl_stream*)s;
     struct strm_win swin;
@@ -2074,17 +2031,15 @@ static pj_status_t sdl_stream_get_sdl_window(pjmedia_vid_dev_stream *s, const vo
     swin.strm = strm;
     swin.pval.pval = pval;
 
-    job_queue_post_job(strm->sf->jq, get_sdl_window, &swin, 0, &status);
+    job_queue_post_job(strm->sp.sf->jq, get_sdl_window, &swin, 0, &status);
 
     return status;
 }
 static pj_status_t sdl_stream_set_sdl_window(pjmedia_vid_dev_stream *s, const void *pval){
     struct sdl_stream *strm = (struct sdl_stream*)s;
     pj_status_t status = PJ_SUCCESS;
-
-    PJ_ASSERT_RETURN(s && pval, PJ_EINVAL);
-
-	strm->windowP = (SDL_Window*)pval;
+    (strm);
+    (pval);
 
     return status;
 }
@@ -2095,17 +2050,17 @@ static pj_status_t sdl_stream_put_previw(pjmedia_vid_dev_stream *strm, const pjm
     pj_status_t status = 0;
 
     (status);
-    stream->last_ts.u64 = frame->timestamp.u64;
+    stream->sp.last_ts.u64 = frame->timestamp.u64;
 
-    if (!stream->is_running)
+    if (!stream->sp.is_running)
     return PJ_EINVALIDOP;
 
     if (frame->size==0 || frame->buf==NULL ||
-    frame->size < stream->vafp.framebytes)
+    frame->size < stream->sp.vafp.framebytes)
     return PJ_SUCCESS;
 
-    stream->frame = frame;
-    job_queue_post_job(stream->sf->jq, put_frame_prwviw, strm, 0, &status);
+    stream->sp.frame = frame;
+    job_queue_post_job(stream->sp.sf->jq, put_frame_prwviw, strm, 0, &status);
     return status;
 }
 static pj_status_t sdl_stream_put_stream(pjmedia_vid_dev_stream *strm, const pjmedia_frame *frame){
@@ -2113,54 +2068,88 @@ static pj_status_t sdl_stream_put_stream(pjmedia_vid_dev_stream *strm, const pjm
     pj_status_t status = 0;
 
     (status);
-    stream->last_ts.u64 = frame->timestamp.u64;
+    stream->sp.last_ts.u64 = frame->timestamp.u64;
 
-    if (!stream->is_running)
+    if (!stream->sp.is_running)
     return PJ_EINVALIDOP;
 
     if (frame->size==0 || frame->buf==NULL ||
-    frame->size < stream->vafp.framebytes)
+    frame->size < stream->sp.vafp.framebytes)
     return PJ_SUCCESS;
 
-    stream->frame = frame;
-    job_queue_post_job(stream->sf->jq, put_frame_stream, strm, 0, &status);
+    stream->sp.frame = frame;
+    job_queue_post_job(stream->sp.sf->jq, put_frame_stream, strm, 0, &status);
     return status;
 }
 /// ABChernic : 2018-01-04 <<<
 
 /* API: create stream */
 static pj_status_t sdl_factory_create_stream(pjmedia_vid_dev_factory *f, pjmedia_vid_dev_param *param, 
-											 const pjmedia_vid_dev_cb *cb, void *user_data, pjmedia_vid_dev_stream **p_vid_strm){
-    struct sdl_factory *sf = (struct sdl_factory*)f;
-    pj_pool_t *pool;
-    struct sdl_stream *strm;
+                                             const pjmedia_vid_dev_cb *cb, void *user_data, pjmedia_vid_dev_stream **p_vid_strm){
+
     pj_status_t status;
+    struct sdl_stream *strm;
+
+    struct sdl_factory *sfP = (struct sdl_factory*)f;
+    pj_pool_t *poolP;
+
+    //struct sdl_factory *sfS   = (struct sdl_factory*)f;
+    //pj_pool_t *poolS;
 
     PJ_ASSERT_RETURN(param->dir == PJMEDIA_DIR_RENDER, PJ_EINVAL);
 
+    // strm->sp
+    //////////////////////////////////////////////////////////////
     /* Create and Initialize stream descriptor */
-    pool = pj_pool_create(sf->pf, "sdl-dev", 1000, 1000, NULL);
-    PJ_ASSERT_RETURN(pool != NULL, PJ_ENOMEM);
+    poolP = pj_pool_create(sfP->pf, "sdl-dev", 1000, 1000, NULL);
+    PJ_ASSERT_RETURN(poolP != NULL, PJ_ENOMEM);
 
-    strm = PJ_POOL_ZALLOC_T(pool, struct sdl_stream);
+    strm = PJ_POOL_ZALLOC_T(poolP, struct sdl_stream);
     pj_memcpy(&strm->param, param, sizeof(*param));
-    strm->pool = pool;
-    strm->sf = sf;
-    pj_memcpy(&strm->vid_cb, cb, sizeof(*cb));
-    pj_list_init(&strm->list_entry);
-    strm->list_entry.stream = strm;
-    strm->user_data = user_data;
+    strm->sp.pool              = poolP;
+    strm->sp.sf                = sfP;
+    pj_memcpy(&strm->sp.vid_cb, cb, sizeof(*cb));
+    pj_list_init(&strm->sp.list_entry);
+    strm->sp.list_entry.stream = strm;
+    strm->sp.user_data         = user_data;
 
     /* Create render stream here */
-    job_queue_post_job(sf->jq, sdl_create, strm, 0, &status);
+    job_queue_post_job(sfP->jq, sdl_create, strm, 0, &status);
     if (status != PJ_SUCCESS) {
         goto on_error;
     }
-    pj_mutex_lock(strm->sf->mutex);
-    if (pj_list_empty(&strm->sf->streams))
-        pj_sem_post(strm->sf->sem);
-    pj_list_insert_after(&strm->sf->streams, &strm->list_entry);
-    pj_mutex_unlock(strm->sf->mutex);
+    pj_mutex_lock(strm->sp.sf->mutex);
+    if (pj_list_empty(&strm->sp.sf->streams))
+        pj_sem_post(strm->sp.sf->sem);
+    pj_list_insert_after(&strm->sp.sf->streams, &strm->sp.list_entry);
+    pj_mutex_unlock(strm->sp.sf->mutex);
+    //////////////////////////////////////////////////////////////
+
+    // strm->ss
+    //////////////////////////////////////////////////////////////
+    /*poolS = pj_pool_create(sfS->pf, "sdl-dev", 1000, 1000, NULL);
+    PJ_ASSERT_RETURN(poolS != NULL, PJ_ENOMEM);
+
+    strm = PJ_POOL_ZALLOC_T(poolS, struct sdl_stream);
+    pj_memcpy(&strm->param, param, sizeof(*param));
+    strm->ss.pool              = poolS;
+    strm->ss.sf                = sfS;
+    pj_memcpy(&strm->ss.vid_cb, cb, sizeof(*cb));
+    pj_list_init(&strm->ss.list_entry);
+    strm->ss.list_entry.stream = strm;
+    strm->ss.user_data         = user_data;
+
+    job_queue_post_job(sfS->jq, sdl_create, strm, 0, &status);
+    if (status != PJ_SUCCESS) {
+        goto on_error;
+    }
+    pj_mutex_lock(strm->ss.sf->mutex);
+    if (pj_list_empty(&strm->ss.sf->streams))
+        pj_sem_post(strm->ss.sf->sem);
+    pj_list_insert_after(&strm->ss.sf->streams, &strm->ss.list_entry);
+    pj_mutex_unlock(strm->ss.sf->mutex);
+    */
+    //////////////////////////////////////////////////////////////
 
     /* Done */
     strm->base.op = &stream_op;

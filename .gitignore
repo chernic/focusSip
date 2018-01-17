@@ -7,6 +7,7 @@ Released
 *_i.h
 *_p.c
 *.user
+*.ncb
 
 
 # Compiled Object files
@@ -88,3 +89,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/src/transparentAtlWin/*.ncb

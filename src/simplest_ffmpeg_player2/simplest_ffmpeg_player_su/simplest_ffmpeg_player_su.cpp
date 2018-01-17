@@ -294,15 +294,19 @@ int  main(int argc, char* argv[]) {
 
   sdlR          = SDL_CreateRenderer(sdlWindow, -1, 0);
 
-  s1.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, aTexW, aTexH);
-  s2.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, bTexW, bTexH);
+  s1.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, 
+    SDL_TEXTUREACCESS_STREAMING, aTexW, aTexH);
+
+  s2.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, 
+    SDL_TEXTUREACCESS_STREAMING, bTexW, bTexH);
 
   }
 
   s1.sdlSetRect(0, 0, s1.pCodecCtx->width, s1.pCodecCtx->height);
   s2.sdlSetRect(0, 0, sdlScreenW/3, sdlScreenH/2);         // 大概显示为左上角屏幕的六分之一
 
-  // Run-Time Check Failure #3 - The variable 'event' is being used without being initialized.
+  // Run-Time Check Failure #3 - The variable 'event' is being used 
+  // without being initialized.
   SDL_StartTextInput();
 
   /* Print initial modifier state */
@@ -317,7 +321,7 @@ int  main(int argc, char* argv[]) {
   int isChecked;
   int isToolBarShowed=0;
   int isWindowToBeClosed=0;    /* Watch keystrokes */
-  
+
   while (!isWindowToBeClosed) {
     /* Check for gEvent */
     /*SDL_WaitEvent(&gEvent); emscripten does not like waiting*/
@@ -333,7 +337,7 @@ int  main(int argc, char* argv[]) {
       // packet
       s1.packet = (AVPacket *)av_malloc(sizeof(AVPacket));
       s2.packet = (AVPacket *)av_malloc(sizeof(AVPacket));
-      
+
       /// 1 pFormatCtx
       /// 1 videoindex
       /// 2 pCodecCtx
@@ -370,6 +374,7 @@ int  main(int argc, char* argv[]) {
                 if(s1.FReaded && s1.FDecoded){
                   sws_scale(s1.img_convert_ctx, (const uint8_t* const*)s1.pFrame->data, s1.pFrame->linesize, 0,
                   s1.pCodecCtx->height, s1.pFrameYUV->data, s1.pFrameYUV->linesize);
+
                   SDL_UpdateTexture( s1.sdlTexture, NULL, s1.pFrameYUV->data[0], s1.pFrameYUV->linesize[0] );
                   s1.tmpTexture = s1.sdlTexture;
                   SDL_RenderCopy( sdlR, s1.sdlTexture, NULL, NULL);
@@ -378,6 +383,7 @@ int  main(int argc, char* argv[]) {
                 if(s2.FReaded && s2.FDecoded){
                   sws_scale(s2.img_convert_ctx, (const uint8_t* const*)s2.pFrame->data, s2.pFrame->linesize, 0,
                   s2.pCodecCtx->height, s2.pFrameYUV->data, s2.pFrameYUV->linesize);
+
                   SDL_UpdateTexture( s2.sdlTexture, NULL, s2.pFrameYUV->data[0], s2.pFrameYUV->linesize[0] );
                   s2.tmpTexture = s2.sdlTexture;
                   SDL_RenderCopy( sdlR, s2.sdlTexture, NULL, &s2.sdlRect );

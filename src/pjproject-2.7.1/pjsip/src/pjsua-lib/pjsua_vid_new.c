@@ -2530,4 +2530,3 @@ PJ_DEF(pj_bool_t) pjsua_call_vid_stream_is_running( pjsua_call_id call_id,int me
 #endif /* PJSUA_HAS_VIDEO */
 
 #endif /* PJSUA_MEDIA_HAS_PJMEDIA */
-
