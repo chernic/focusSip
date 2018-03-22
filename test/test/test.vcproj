@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="test"
 	ProjectGUID="{2A190ED1-B829-40A6-B542-0382D8D42B79}"
+	RootNamespace="test"
 	Keyword="AtlProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -231,6 +232,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\First.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -277,6 +282,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\First.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
 				>
 			</File>
@@ -294,6 +303,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\First.rgs"
+				>
+			</File>
 			<File
 				RelativePath=".\test.rc"
 				>

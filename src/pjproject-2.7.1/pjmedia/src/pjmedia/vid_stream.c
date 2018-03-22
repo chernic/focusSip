@@ -824,6 +824,10 @@ static pj_status_t put_frame(pjmedia_port *port,
     pj_timestamp initial_time;
     pj_timestamp null_ts ={{0}};
 
+	// ABChernic : buf_size may be checked first
+	unsigned xBuf_size = 0;
+
+
 #if defined(PJMEDIA_STREAM_ENABLE_KA) && PJMEDIA_STREAM_ENABLE_KA != 0
     /* If the interval since last sending packet is greater than
      * PJMEDIA_STREAM_KA_INTERVAL, send keep-alive packet.
@@ -933,9 +937,12 @@ static pj_status_t put_frame(pjmedia_port *port,
 	 */
 	if (frame_out.size != 0) {
 	    /* Copy RTP header to the beginning of packet */
+		// ABhernic : 2018-02-01 channel->buf
+		xBuf_size = channel->buf;
 	    pj_memcpy(channel->buf, rtphdr, sizeof(pjmedia_rtp_hdr));
 
 	    /* Send the RTP packet to the transport. */
+		// ABhernic : 2018-02-01 stream->transport
 	    status = pjmedia_transport_send_rtp(stream->transport,
 						(char*)channel->buf,
 						frame_out.size +

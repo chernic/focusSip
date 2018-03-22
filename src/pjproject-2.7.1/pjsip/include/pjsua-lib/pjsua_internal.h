@@ -356,26 +356,23 @@ typedef enum pjsua_vid_win_type
 
 typedef struct pjsua_vid_win
 {
-    pjsua_vid_win_type		type;				/**< Type.				*/     //win
-    pj_pool_t				*pool;				/**< Own pool.			*/     //win
-    unsigned	 			ref_cnt;			/**< Reference counter.	*/     //win
-
-    pjmedia_vid_port		*vp_cap;			/**< Capture  vidport.	*/
-    pjmedia_vid_port		*vp_rend;			/**< Renderer vidport	*/
+    pjsua_vid_win_type		type;				/**< Type.				*/
+    pj_pool_t				*pool;				/**< Own pool.			*/
+    unsigned	 			ref_cnt;			/**< Reference counter.	*/
     pjmedia_port			*tee;				/**< Video tee			*/
+    pj_bool_t               is_native;          /**< Capture(native preview) or Render stream*/
 
-	// ABChernic : preview
-    pjmedia_vid_dev_index	preview_cap_id;		/**< Capture dev id		*/
-    pj_bool_t				preview_running;	/**< Preview is started	*/
-    pj_bool_t				is_native;	/**< Preview is by dev  */
-    //pj_bool_t				preview_is_native;	/**< Preview is by dev  */
-	// ABChernic : stream
-    pjmedia_vid_dev_index	stream_cap_id;		/**< Capture dev id		*/
-    pj_bool_t				stream_running;		/**< Stream is started	*/
-    //pj_bool_t				stream_is_native; 	/**< Stream is by dev	*/
+    // ABChernic : preview
+    pjmedia_vid_port		*vp_cap;			/**< Capture  vidport.	           */
+    pjmedia_vid_dev_index   cap_id;             /**< Capture  dev id     (PREVIEW) */
+    pj_bool_t               cap_running;        /**< Capture  is started (PREVIEW) */
+
+    // ABChernic : stream	
+    pjmedia_vid_port		*vp_rend;			/**< Renderer vidport	           */
+    pjmedia_vid_dev_index   rend_id;            /**< Render   dev id     (STREAM ) */
+    pj_bool_t               rend_running;       /**< Render   is started (STREAM ) */
 
 } pjsua_vid_win;
-
 
 typedef struct pjsua_timer_list
 {
@@ -509,7 +506,6 @@ extern struct pjsua_data pjsua_var;
 PJ_DECL(struct pjsua_data*) pjsua_get_var(void);
 
 
-
 /**
  * IM callback data.
  */
@@ -524,7 +520,6 @@ typedef struct pjsua_im_data
 
 pj_status_t pjsua_media_apply_xml_control(pjsua_call_id call_id,
 					  const pj_str_t *xml_st);
-
 
 /**
  * Duplicate IM data.

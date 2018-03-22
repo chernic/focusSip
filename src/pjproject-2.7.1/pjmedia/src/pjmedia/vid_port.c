@@ -27,14 +27,11 @@
 
 #if defined(PJMEDIA_HAS_VIDEO) && (PJMEDIA_HAS_VIDEO != 0)
 
-
 #define SIGNATURE   PJMEDIA_SIG_VID_PORT
 #define THIS_FILE   "vid_port.c"
 
-
 /* Enable/disable test of finding closest format algo */
 #define ENABLE_TEST_FIND_FMT 0
-
 
 /**
  * Enable this to trace the format matching process.
@@ -56,28 +53,26 @@
 #   define PJMEDIA_VID_PORT_MATCH_WIDTH_ARRAY_SIZE 3
 #endif
 
+// 结构体
 typedef struct vid_pasv_port vid_pasv_port;
 
-enum role
-{
+enum   role{
     ROLE_NONE,
     ROLE_ACTIVE,
     ROLE_PASSIVE
 };
 
-enum fmt_match
-{
+enum   fmt_match{
     FMT_MATCH,
     FMT_SAME_COLOR_SPACE,
     FMT_DIFF_COLOR_SPACE
 };
 
-struct pjmedia_vid_port
-{
+struct pjmedia_vid_port{
     pj_pool_t               *pool;
     pj_str_t                 dev_name;
     pjmedia_dir              dir;
-//    pjmedia_rect_size        cap_size;
+//    pjmedia_rect_size      cap_size;
     pjmedia_vid_dev_stream  *strm;
     pjmedia_vid_dev_cb       strm_cb;
     void                    *strm_cb_data;
@@ -96,8 +91,8 @@ struct pjmedia_vid_port
         unsigned                 usec_src, usec_dst;
     } conv;
 
-    pjmedia_clock               *clock;
-    pjmedia_clock_src            clocksrc;
+    pjmedia_clock           *clock;
+    pjmedia_clock_src        clocksrc;
 
     struct sync_clock_src_t
     {
@@ -113,45 +108,36 @@ struct pjmedia_vid_port
     pj_mutex_t              *frm_mutex;
 };
 
-struct vid_pasv_port
-{
+struct vid_pasv_port{
     pjmedia_port     base;
     pjmedia_vid_port    *vp;
 };
 
-struct fmt_prop 
-{
+struct fmt_prop {
     pj_uint32_t id;
     pjmedia_rect_size size;
     pjmedia_ratio fps;
 };
 
-static pj_status_t vidstream_cap_cb(pjmedia_vid_dev_stream *stream,
-                    void *user_data,
-                    pjmedia_frame *frame);
-static pj_status_t vidstream_render_cb(pjmedia_vid_dev_stream *stream,
-                       void *user_data,
-                       pjmedia_frame *frame);
-static pj_status_t vidstream_event_cb(pjmedia_event *event,
-                                      void *user_data);
-static pj_status_t client_port_event_cb(pjmedia_event *event,
-                                        void *user_data);
 
-static void enc_clock_cb(const pj_timestamp *ts, void *user_data);
-static void dec_clock_cb(const pj_timestamp *ts, void *user_data);
-
-static pj_status_t vid_pasv_port_put_frame(struct pjmedia_port *this_port,pjmedia_frame *frame);
-static pj_status_t vid_pasv_port_get_frame(struct pjmedia_port *this_port,pjmedia_frame *frame);
+// 声明
+static pj_status_t  vidstream_cap_cb(pjmedia_vid_dev_stream *stream,void *user_data,pjmedia_frame *frame);
+static pj_status_t  vidstream_render_cb(pjmedia_vid_dev_stream *stream,void *user_data,pjmedia_frame *frame);
+static pj_status_t  vidstream_event_cb(pjmedia_event *event,void *user_data);
+static pj_status_t  client_port_event_cb(pjmedia_event *event,void *user_data);
+static void         enc_clock_cb(const pj_timestamp *ts, void *user_data);
+static void         dec_clock_cb(const pj_timestamp *ts, void *user_data);
+static pj_status_t  vid_pasv_port_put_frame(struct pjmedia_port *this_port,pjmedia_frame *frame);
+static pj_status_t  vid_pasv_port_get_frame(struct pjmedia_port *this_port,pjmedia_frame *frame);
 
 
-PJ_DEF(void) pjmedia_vid_port_param_default(pjmedia_vid_port_param *prm)
-{
+// 函数
+PJ_DEF(void)                    pjmedia_vid_port_param_default(pjmedia_vid_port_param *prm){
     pj_bzero(prm, sizeof(*prm));
     prm->active = PJ_TRUE;
 }
 
-static const char *vid_dir_name(pjmedia_dir dir)
-{
+static const char *             vid_dir_name(pjmedia_dir dir){
     switch (dir) {
     case PJMEDIA_DIR_CAPTURE:
     return "capture";
@@ -162,8 +148,7 @@ static const char *vid_dir_name(pjmedia_dir dir)
     }
 }
 
-static pj_status_t create_converter(pjmedia_vid_port *vp)
-{
+static pj_status_t              create_converter(pjmedia_vid_port *vp){
     if (vp->conv.conv) {
         pjmedia_converter_destroy(vp->conv.conv);
     vp->conv.conv = NULL;
@@ -218,9 +203,7 @@ static pj_status_t create_converter(pjmedia_vid_port *vp)
     return PJ_SUCCESS;
 }     
 
-static pj_uint32_t match_format_id(pj_uint32_t req_id,
-                   pj_uint32_t sup_id)
-{
+static pj_uint32_t              match_format_id(pj_uint32_t req_id,pj_uint32_t sup_id){
     const pjmedia_video_format_info *req_fmt_info, *sup_fmt_info;
 
     if (req_id == sup_id)
@@ -245,9 +228,7 @@ static pj_uint32_t match_format_id(pj_uint32_t req_id,
     return FMT_DIFF_COLOR_SPACE;
 }
 
-static pj_uint32_t get_match_format_id(pj_uint32_t req_fmt_id,
-                       pjmedia_vid_dev_info *di)
-{
+static pj_uint32_t              get_match_format_id(pj_uint32_t req_fmt_id,pjmedia_vid_dev_info *di){
     unsigned i, match_idx = 0, match_fmt = FMT_DIFF_COLOR_SPACE+1;
 
     /* Find the matching format. If no exact match is found, find 
@@ -282,11 +263,7 @@ static pj_uint32_t get_match_format_id(pj_uint32_t req_fmt_id,
  * Find the lowest difference of the aspect ratio between the requested and
  * the supported format.
  */
-static struct fmt_prop find_closest_fmt(pj_uint32_t req_fmt_id,
-                    pjmedia_rect_size *req_fmt_size,
-                    pjmedia_ratio *req_fmt_fps,
-                    pjmedia_vid_dev_info *di)
-{
+static struct                   fmt_prop find_closest_fmt(pj_uint32_t req_fmt_id,pjmedia_rect_size *req_fmt_size,pjmedia_ratio *req_fmt_fps,pjmedia_vid_dev_info *di){
     unsigned i, match_idx = 0;
     pj_uint32_t match_fmt_id;     
     float req_ratio, min_diff_ratio = 0.0;    
@@ -300,8 +277,8 @@ static struct fmt_prop find_closest_fmt(pj_uint32_t req_fmt_id,
 
     /* Initialize the list. */
     for (i=0;i<PJMEDIA_VID_PORT_MATCH_WIDTH_ARRAY_SIZE;++i) {
-    nearest_width[i].w = 0xFFFFFFFF;
-    nearest_width[i].h = 0;
+        nearest_width[i].w = 0xFFFFFFFF;
+        nearest_width[i].h = 0;
     }
 
     /* Get the matching format id. We assume each format will support all 
@@ -473,10 +450,8 @@ static void test_find_closest_fmt(pjmedia_vid_dev_info *di)
 }
 #endif
 
-PJ_DEF(pj_status_t) pjmedia_vid_port_create( pj_pool_t *pool,
-                         const pjmedia_vid_port_param *prm,
-                         pjmedia_vid_port **p_vid_port)
-{
+
+PJ_DEF(pj_status_t)             pjmedia_vid_port_create( pj_pool_t *pool,const pjmedia_vid_port_param *prm,pjmedia_vid_port **p_vid_port){
     pjmedia_vid_port *vp;
     pjmedia_video_format_detail *vfd;
     char fmt_name[5];
@@ -677,67 +652,38 @@ on_error:
     return status;
 }
 
-PJ_DEF(void) pjmedia_vid_port_set_cb(pjmedia_vid_port *vid_port,
-                     const pjmedia_vid_dev_cb *cb,
-                                     void *user_data)
-{
-    pj_assert(vid_port && cb);
-    pj_memcpy(&vid_port->strm_cb, cb, sizeof(*cb));
-    vid_port->strm_cb_data = user_data;
+PJ_DEF(void)                    pjmedia_vid_port_set_cb(pjmedia_vid_port *vp,const pjmedia_vid_dev_cb *cb,void *user_data){
+    pj_assert(vp && cb);
+    pj_memcpy(&vp->strm_cb, cb, sizeof(*cb));
+    vp->strm_cb_data = user_data;
 }
 
-PJ_DEF(pjmedia_vid_dev_stream*)
-pjmedia_vid_port_get_stream(pjmedia_vid_port *vp)
-{
+PJ_DEF(pjmedia_vid_dev_stream*) pjmedia_vid_port_get_stream(pjmedia_vid_port *vp){
     PJ_ASSERT_RETURN(vp, NULL);
     return vp->strm;
 }
 
 /// ABChernic
-PJ_DEF(pj_status_t) pjmedia_vid_port_pass_sdl_window(pjmedia_vid_port *vp, pjmedia_vid_port *vpP)
-{
-    pj_status_t status = PJ_SUCCESS;
-    status = pjmedia_vid_dev_stream_pass_sdl_window(vp->strm, vpP->strm);
-    return status;
-}
-
-/// ABChernic
-PJ_DEF(pj_status_t) pjmedia_vid_port_set_sdl_window(pjmedia_vid_port *vp, void *user_data)
-{
+PJ_DEF(pj_status_t)             pjmedia_vid_port_set_sdl_window(pjmedia_vid_port *vp, void *user_data){
     pj_status_t status = PJ_SUCCESS;
     status = pjmedia_vid_dev_stream_set_sdl_window(vp->strm, user_data);
     return status;
 }
-
-PJ_DEF(pj_status_t) pjmedia_vid_port_get_sdl_window(pjmedia_vid_port *vp, void *user_data)
-{
+PJ_DEF(pj_status_t)             pjmedia_vid_port_get_sdl_window(pjmedia_vid_port *vp, void *user_data){
     pj_status_t status = PJ_SUCCESS;
     status = pjmedia_vid_dev_stream_get_sdl_window(vp->strm, user_data);
     return status;
 }
-/// ABChernic
-
-
-
-PJ_DEF(pjmedia_port*)
-pjmedia_vid_port_get_passive_port(pjmedia_vid_port *vp)
-{
+PJ_DEF(pjmedia_port*)           pjmedia_vid_port_get_passive_port(pjmedia_vid_port *vp){
     PJ_ASSERT_RETURN(vp && vp->role==ROLE_PASSIVE, NULL);
     return &vp->pasv_port->base;
 }
 
-
-PJ_DEF(pjmedia_clock_src *)
-pjmedia_vid_port_get_clock_src( pjmedia_vid_port *vid_port )
-{
+PJ_DEF(pjmedia_clock_src *)     pjmedia_vid_port_get_clock_src( pjmedia_vid_port *vid_port ){
     PJ_ASSERT_RETURN(vid_port, NULL);
     return &vid_port->clocksrc;
 }
-
-PJ_DECL(pj_status_t)
-pjmedia_vid_port_set_clock_src( pjmedia_vid_port *vid_port,
-                                pjmedia_clock_src *clocksrc)
-{
+PJ_DECL(pj_status_t)            pjmedia_vid_port_set_clock_src( pjmedia_vid_port *vid_port,pjmedia_clock_src *clocksrc){
     PJ_ASSERT_RETURN(vid_port && clocksrc, PJ_EINVAL);
 
     vid_port->sync_clocksrc.sync_clocksrc = clocksrc;
@@ -748,45 +694,38 @@ pjmedia_vid_port_set_clock_src( pjmedia_vid_port *vid_port,
     return PJ_SUCCESS;
 }
 
+/// client port
+PJ_DEF(pj_status_t)             pjmedia_vid_port_connect(pjmedia_vid_port *vp, pjmedia_port *port, pj_bool_t destroy){
 
-PJ_DEF(pj_status_t) pjmedia_vid_port_connect(pjmedia_vid_port *vp,
-                          pjmedia_port *port,
-                          pj_bool_t destroy)
-{
-    // 2018-01-04 Error
     PJ_ASSERT_RETURN(vp && vp->role==ROLE_ACTIVE, PJ_EINVAL);
+
     vp->destroy_client_port = destroy;
     vp->client_port = port;
-
     /* Subscribe to client port's events */
-    pjmedia_event_subscribe(NULL, &client_port_event_cb, vp,
-                            vp->client_port);
+    pjmedia_event_subscribe    (NULL, &client_port_event_cb, vp, vp->client_port);
 
     return PJ_SUCCESS;
+
 }
+PJ_DEF(pj_status_t)             pjmedia_vid_port_disconnect(pjmedia_vid_port *vp){
 
-
-PJ_DEF(pj_status_t) pjmedia_vid_port_disconnect(pjmedia_vid_port *vp)
-{
     PJ_ASSERT_RETURN(vp && vp->role==ROLE_ACTIVE, PJ_EINVAL);
 
-    pjmedia_event_unsubscribe(NULL, &client_port_event_cb, vp,
-                              vp->client_port);
+    pjmedia_event_unsubscribe  (NULL, &client_port_event_cb, vp, vp->client_port);
     vp->client_port = NULL;
 
     return PJ_SUCCESS;
+
 }
+PJ_DEF(pjmedia_port*)           pjmedia_vid_port_get_connected_port(pjmedia_vid_port *vp){
 
-
-PJ_DEF(pjmedia_port*)
-pjmedia_vid_port_get_connected_port(pjmedia_vid_port *vp)
-{
     PJ_ASSERT_RETURN(vp && vp->role==ROLE_ACTIVE, NULL);
     return vp->client_port;
+
 }
 
-PJ_DEF(pj_status_t) pjmedia_vid_port_start(pjmedia_vid_port *vp)
-{
+/// port operation
+PJ_DEF(pj_status_t)             pjmedia_vid_port_start(pjmedia_vid_port *vp){
     pj_status_t status;
 
     PJ_ASSERT_RETURN(vp, PJ_EINVAL);
@@ -796,9 +735,9 @@ PJ_DEF(pj_status_t) pjmedia_vid_port_start(pjmedia_vid_port *vp)
     goto on_error;
 
     if (vp->clock) {
-    status = pjmedia_clock_start(vp->clock);
-    if (status != PJ_SUCCESS)
-        goto on_error;
+		status = pjmedia_clock_start(vp->clock);
+		if (status != PJ_SUCCESS)
+			goto on_error;
     }
 
     return PJ_SUCCESS;
@@ -807,63 +746,59 @@ on_error:
     pjmedia_vid_port_stop(vp);
     return status;
 }
-
-PJ_DEF(pj_bool_t) pjmedia_vid_port_is_running(pjmedia_vid_port *vp)
-{
+PJ_DEF(pj_bool_t)               pjmedia_vid_port_is_running(pjmedia_vid_port *vp){
     return pjmedia_vid_dev_stream_is_running(vp->strm);
 }
-
-PJ_DEF(pj_status_t) pjmedia_vid_port_stop(pjmedia_vid_port *vp)
-{
+PJ_DEF(pj_status_t)             pjmedia_vid_port_stop(pjmedia_vid_port *vp){
     pj_status_t status;
 
     PJ_ASSERT_RETURN(vp, PJ_EINVAL);
 
     if (vp->clock) {
-    status = pjmedia_clock_stop(vp->clock);
+		status = pjmedia_clock_stop(vp->clock);
     }
 
     status = pjmedia_vid_dev_stream_stop(vp->strm);
 
     return status;
 }
-
-PJ_DEF(void) pjmedia_vid_port_destroy(pjmedia_vid_port *vp)
-{
+PJ_DEF(void)                    pjmedia_vid_port_destroy(pjmedia_vid_port *vp){
     PJ_ASSERT_ON_FAIL(vp, return);
 
     PJ_LOG(4,(THIS_FILE, "Closing %s..", vp->dev_name.ptr));
 
     if (vp->clock) {
-    pjmedia_clock_destroy(vp->clock);
-    vp->clock = NULL;
+		pjmedia_clock_destroy(vp->clock);
+		vp->clock = NULL;
     }
+
     if (vp->strm) {
         pjmedia_event_unsubscribe(NULL, &vidstream_event_cb, vp, vp->strm);
-    pjmedia_vid_dev_stream_destroy(vp->strm);
-    vp->strm = NULL;
+		pjmedia_vid_dev_stream_destroy(vp->strm);
+		vp->strm = NULL;
     }
+
     if (vp->client_port) {
-        pjmedia_event_unsubscribe(NULL, &client_port_event_cb, vp,
-                                  vp->client_port);
-    if (vp->destroy_client_port)
-        pjmedia_port_destroy(vp->client_port);
-    vp->client_port = NULL;
+        pjmedia_event_unsubscribe(NULL, &client_port_event_cb, vp,vp->client_port);
+
+		if (vp->destroy_client_port)
+			pjmedia_port_destroy(vp->client_port);
+			vp->client_port = NULL;
+		}
+		if (vp->frm_mutex) {
+			pj_mutex_destroy(vp->frm_mutex);
+			vp->frm_mutex = NULL;
+		}
+		if (vp->conv.conv) {
+			pjmedia_converter_destroy(vp->conv.conv);
+			vp->conv.conv = NULL;
     }
-    if (vp->frm_mutex) {
-    pj_mutex_destroy(vp->frm_mutex);
-    vp->frm_mutex = NULL;
-    }
-    if (vp->conv.conv) {
-        pjmedia_converter_destroy(vp->conv.conv);
-        vp->conv.conv = NULL;
-    }
+
     pj_pool_release(vp->pool);
 }
 
 /*
-static void save_rgb_frame(int width, int height, const pjmedia_frame *frm)
-{
+static void save_rgb_frame(int width, int height, const pjmedia_frame *frm){
     static int counter;
     FILE *pFile;
     char szFilename[32];
@@ -891,19 +826,14 @@ static void save_rgb_frame(int width, int height, const pjmedia_frame *frm)
 }
 */
 
-/* Handle event from vidstream */
-static pj_status_t vidstream_event_cb(pjmedia_event *event,
-                                      void *user_data)
-{
+// Handle event from vidstream
+static pj_status_t              vidstream_event_cb(pjmedia_event *event,void *user_data){
     pjmedia_vid_port *vp = (pjmedia_vid_port*)user_data;
     
     /* Just republish the event to our client */
     return pjmedia_event_publish(NULL, vp, event, 0);
 }
-
-static pj_status_t client_port_event_cb(pjmedia_event *event,
-                                        void *user_data)
-{
+static pj_status_t              client_port_event_cb(pjmedia_event *event,void *user_data){
     pjmedia_vid_port *vp = (pjmedia_vid_port*)user_data;
 
     if (event->type == PJMEDIA_EVENT_FMT_CHANGED) {
@@ -1013,11 +943,7 @@ static pj_status_t client_port_event_cb(pjmedia_event *event,
     return pjmedia_event_publish(NULL, vp, event,
                                  PJMEDIA_EVENT_PUBLISH_POST_EVENT);
 }
-
-static pj_status_t convert_frame(pjmedia_vid_port *vp,
-                                 pjmedia_frame *src_frame,
-                                 pjmedia_frame *dst_frame)
-{
+static pj_status_t              convert_frame(pjmedia_vid_port *vp,pjmedia_frame *src_frame,pjmedia_frame *dst_frame){
     pj_status_t status = PJ_SUCCESS;
 
     if (vp->conv.conv) {
@@ -1033,18 +959,13 @@ static pj_status_t convert_frame(pjmedia_vid_port *vp,
 }
 
 /* Copy frame to buffer. */
-static void copy_frame_to_buffer(pjmedia_vid_port *vp,
-                                 pjmedia_frame *frame)
-{
+/* Get frame from buffer and convert it if necessary. */
+static void                     copy_frame_to_buffer(pjmedia_vid_port *vp, pjmedia_frame *frame){
     pj_mutex_lock(vp->frm_mutex);
     pjmedia_frame_copy(vp->frm_buf, frame);
     pj_mutex_unlock(vp->frm_mutex);
 }
-
-/* Get frame from buffer and convert it if necessary. */
-static pj_status_t get_frame_from_buffer(pjmedia_vid_port *vp,
-                                         pjmedia_frame *frame)
-{
+static pj_status_t              get_frame_from_buffer(pjmedia_vid_port *vp,pjmedia_frame *frame){
     pj_status_t status = PJ_SUCCESS;
 
     pj_mutex_lock(vp->frm_mutex);
@@ -1056,9 +977,8 @@ static pj_status_t get_frame_from_buffer(pjmedia_vid_port *vp,
     
     return status;
 }
-
-static void enc_clock_cb(const pj_timestamp *ts, void *user_data)
-{
+// Clock Callback
+static void                     enc_clock_cb(const pj_timestamp *ts, void *user_data){
     /* We are here because user wants us to be active but the stream is
      * passive. So get a frame from the stream and push it to user.
      */
@@ -1070,8 +990,9 @@ static void enc_clock_cb(const pj_timestamp *ts, void *user_data)
 
     PJ_UNUSED_ARG(ts);
 
-    if (!vp->client_port)
-    return;
+    if (!vp->client_port){
+        return;
+    }
 
     if (vp->stream_role == ROLE_PASSIVE) {
         while (vp->conv.usec_ctr < vp->conv.usec_dst) {
@@ -1080,24 +1001,26 @@ static void enc_clock_cb(const pj_timestamp *ts, void *user_data)
             vp->conv.usec_ctr += vp->conv.usec_src;
         }
         vp->conv.usec_ctr -= vp->conv.usec_dst;
-        if (status != PJ_SUCCESS)
-        return;
+        if (status != PJ_SUCCESS){
+            return;
+        }
     }
 
     //save_rgb_frame(vp->cap_size.w, vp->cap_size.h, vp->frm_buf);
 
-    frame_.buf = vp->conv.conv_buf;
+    frame_.buf  = vp->conv.conv_buf;
     frame_.size = vp->conv.conv_buf_size;
     status = get_frame_from_buffer(vp, &frame_);
-    if (status != PJ_SUCCESS)
+    if (status != PJ_SUCCESS){
         return;
+    }
 
     status = pjmedia_port_put_frame(vp->client_port, &frame_);
-    if (status != PJ_SUCCESS)
+    if (status != PJ_SUCCESS){
         return;
+    }
 }
-
-static void dec_clock_cb(const pj_timestamp *ts, void *user_data){
+static void                     dec_clock_cb(const pj_timestamp *ts, void *user_data){
     /* We are here because user wants us to be active but the stream is
      * passive. So get a frame from the stream and push it to user.
      */
@@ -1117,16 +1040,13 @@ static void dec_clock_cb(const pj_timestamp *ts, void *user_data){
     if (status != PJ_SUCCESS){
         return;
     }
-    
+
     if (frame.size > 0){
         status = pjmedia_vid_dev_stream_put_frame(vp->strm, &frame);
     }
 }
-
-static pj_status_t vidstream_cap_cb(pjmedia_vid_dev_stream *stream,
-                    void *user_data,
-                    pjmedia_frame *frame)
-{
+// Cap Callback
+static pj_status_t              vidstream_cap_cb(pjmedia_vid_dev_stream *stream,void *user_data,pjmedia_frame *frame){
     pjmedia_vid_port *vp = (pjmedia_vid_port*)user_data;
 
     /* We just store the frame in the buffer. For active role, we let
@@ -1144,17 +1064,14 @@ static pj_status_t vidstream_cap_cb(pjmedia_vid_dev_stream *stream,
     return PJ_SUCCESS;
 }
 
-static pj_status_t vidstream_render_cb(pjmedia_vid_dev_stream *stream,
-                       void *user_data,
-                       pjmedia_frame *frame)
-{
+static pj_status_t              vidstream_render_cb(pjmedia_vid_dev_stream *stream,void *user_data,pjmedia_frame *frame){
     pjmedia_vid_port *vp = (pjmedia_vid_port*)user_data;
     pj_status_t status = PJ_SUCCESS;
     
     pj_bzero(frame, sizeof(pjmedia_frame));
     if (vp->role==ROLE_ACTIVE) {
-        unsigned frame_ts = vp->clocksrc.clock_rate / 1000 *
-                            vp->clocksrc.ptime_usec / 1000;
+
+        unsigned frame_ts = vp->clocksrc.clock_rate / 1000 * vp->clocksrc.ptime_usec / 1000;
 
         if (!vp->client_port)
             return status;
@@ -1263,11 +1180,13 @@ static pj_status_t vidstream_render_cb(pjmedia_vid_dev_stream *stream,
         pjmedia_clock_src_update(&vp->clocksrc, NULL);
 
         status = convert_frame(vp, vp->frm_buf, frame);
-    if (status != PJ_SUCCESS)
+    
+		if (status != PJ_SUCCESS)
             return status;
 
-    if (!vp->conv.conv)
-        pj_memcpy(frame, vp->frm_buf, sizeof(*frame));
+		if (!vp->conv.conv)
+			pj_memcpy(frame, vp->frm_buf, sizeof(*frame));
+
     } else {
         /* The stream is active while we are passive so we need to get the
          * frame from the buffer.
@@ -1275,12 +1194,16 @@ static pj_status_t vidstream_render_cb(pjmedia_vid_dev_stream *stream,
          */
         get_frame_from_buffer(vp, frame);
     }
-    if (vp->strm_cb.render_cb)
+
+	if (vp->strm_cb.render_cb){
         return (*vp->strm_cb.render_cb)(stream, vp->strm_cb_data, frame);
-    return PJ_SUCCESS;
+	}
+    
+	return PJ_SUCCESS;
 }
 
-static pj_status_t vid_pasv_port_put_frame(struct pjmedia_port *this_port,pjmedia_frame *frame){
+// Cap frame
+static pj_status_t              vid_pasv_port_put_frame(struct pjmedia_port *this_port, pjmedia_frame *frame){
     struct vid_pasv_port *vpp = (struct vid_pasv_port*)this_port;
     pjmedia_vid_port *vp = vpp->vp;
 
@@ -1311,23 +1234,23 @@ static pj_status_t vid_pasv_port_put_frame(struct pjmedia_port *this_port,pjmedi
     return PJ_SUCCESS;
 }
 
-static pj_status_t vid_pasv_port_get_frame(struct pjmedia_port *this_port,
-                       pjmedia_frame *frame)
-{
+static pj_status_t              vid_pasv_port_get_frame(struct pjmedia_port *this_port, pjmedia_frame *frame) {
     struct vid_pasv_port *vpp = (struct vid_pasv_port*)this_port;
     pjmedia_vid_port *vp = vpp->vp;
     pj_status_t status = PJ_SUCCESS;
 
-    if (vp->stream_role==ROLE_PASSIVE) {
+    if (vp->stream_role==ROLE_PASSIVE){
         /* We are passive and the stream is passive.
          * The decoding counterpart is in vid_pasv_port_put_frame().
          */
-    status = pjmedia_vid_dev_stream_get_frame(vp->strm, (vp->conv.conv?
-                                                  vp->frm_buf: frame));
-    if (status != PJ_SUCCESS)
-        return status;
+		status = pjmedia_vid_dev_stream_get_frame(vp->strm, (vp->conv.conv?vp->frm_buf: frame));
+
+		if (status != PJ_SUCCESS){
+			return status;
+		}
 
         status = convert_frame(vp, vp->frm_buf, frame);
+
     } else {
         /* The stream is active while we are passive so we need to get the
          * frame from the buffer.
@@ -1338,6 +1261,5 @@ static pj_status_t vid_pasv_port_get_frame(struct pjmedia_port *this_port,
 
     return status;
 }
-
 
 #endif /* PJMEDIA_HAS_VIDEO */

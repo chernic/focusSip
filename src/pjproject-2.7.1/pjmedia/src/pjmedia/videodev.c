@@ -23,9 +23,7 @@
 #include <pj/pool.h>
 #include <pj/string.h>
 
-
 #if defined(PJMEDIA_HAS_VIDEO) && (PJMEDIA_HAS_VIDEO != 0)
-
 
 #define THIS_FILE   "videodev.c"
 
@@ -36,7 +34,9 @@ static struct cap_info
 {
     const char *name;
     const char *info;
-} cap_infos[] = 
+} 
+
+cap_infos[] = 
 {
     DEFINE_CAP("format",        "Video format"),
     DEFINE_CAP("scale",         "Input dimension"),
@@ -634,13 +634,12 @@ PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_set_cap(pjmedia_vid_dev_stream *strm,
 }
 
 /// ABCherniccccccc
-PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_pass_sdl_window(pjmedia_vid_dev_stream *strm, pjmedia_vid_dev_stream *strmP){
-	return strm->op->pass_sdl_window(strm, strmP);
-}
+/// ABChernic : sdl_dev.c)      static pjmedia_vid_dev_stream_op stream_op
+/// ABChernic : videodev_imp.h) struct pjmedia_vid_dev_stream_op
+/// ABChernic : videodev.c)     PJ_DEF(pj_status_t) XXX()
 PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_get_sdl_window(pjmedia_vid_dev_stream *strm, void *value){
     return strm->op->get_sdl_window(strm, value);
 }
-
 PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_set_sdl_window(pjmedia_vid_dev_stream *strm, const void *value){
     return strm->op->set_sdl_window(strm, value);
 }
@@ -672,9 +671,11 @@ PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_get_frame(pjmedia_vid_dev_stream *str
     return strm->op->get_frame(strm, frame);
 }
 
+
+
 /// ABChernic : 2018-01-04 >>>
 /* API: Stop the stream. */												// O6 *put_frame  (via:typedef struct pjmedia_vid_dev_stream_op)
-PJ_DEF(pj_status_t) pjmedia_vid_dev_put_frame(pjmedia_vid_dev_stream *strm,const pjmedia_frame *frame){
+PJ_DEF(pj_status_t) pjmedia_vid_dev_put_frame       (pjmedia_vid_dev_stream *strm,const pjmedia_frame *frame){
     pj_assert(strm->op->put_frame);
     return strm->op->put_frame(strm, frame);
 }
@@ -689,6 +690,9 @@ PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_put_frame(pjmedia_vid_dev_stream *str
     return strm->op->put_stream(strm, frame);
 }
 /// ABChernic : 2018-01-04 <<<
+
+
+
 
 PJ_DEF(pj_status_t) pjmedia_vid_dev_stream_stop(pjmedia_vid_dev_stream *strm){
     strm->sys.is_running = PJ_FALSE;

@@ -113,8 +113,7 @@ LoadSprite(const char *file)
 }
 
 void
-MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
-{
+MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite){
     int i;
     SDL_Rect viewport, temp;
     SDL_Rect *position, *velocity;
@@ -122,7 +121,7 @@ MoveSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     /* Query the sizes */
     SDL_RenderGetViewport(renderer, &viewport);
 
-    /* Cycle the color and alpha, if desired */
+    /* Cycle the color and alpha, if desired */ 
     if (cycle_color) {
         current_color += cycle_direction;
         if (current_color < 0) {

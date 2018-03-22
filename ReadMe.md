@@ -1,3 +1,60 @@
+$(SolutionDir)..\$(SolutionName)\$(AssemblyName)\include\;
+$(SolutionDir)..\$(SolutionName)\$(AssemblyName)\include\SDL2;
+
+$(SolutionDir)..\SDL2_image\SDL2_image-2.0.2\include
+$(SolutionDir)..\SDL2_image\SDL2_image-2.0.2\lib\$(TargetedSDKArchitecture)
+
+SDL_DisplayFormat  >>>  SDL_DuplicateSurface?
+SDL_SetVideoMode   >>>
+SDL_BlitSurface    >>>  SDL_RenderCopy
+
+At this point, your 1.2 game had a bunch of SDL_Surfaces, which it would
+SDL_BlitSurface()
+to the screen surface to compose the final framebuffer, and eventually
+SDL_Flip()
+to the screen.
+
+For SDL 2.0, you have a bunch of 
+SDL_Textures
+, that you will
+SDL_RenderCopy()
+ to your Renderer to compose the final framebuffer, and eventually
+SDL_RenderPresent()
+ to the screen. It's that simple. 
+ If these textures never need modification,
+ you might find your framerate has just gone through the roof, too.
+
+
+使用SDL1.2版本的 同学注意了, SDL2.0版本的变动
+http://blog.csdn.net/yue7603835/article/details/42030667/
+
+SDL1.2到2.0的迁移指南
+http://blog.csdn.net/lanxiaziyi/article/details/24938981
+
+我晕，SDL2.0如何实现SDL_SetColorKey的功能？
+http://tieba.baidu.com/p/2891729344
+
+以后再也不在SDL上浪费时间了   外加SDL hg/2.0 编译SDL_gfx的一些注意事项
+http://bellsprite.com/?p=66
+
+我的Linux学习之路及参考书籍
+https://www.cnblogs.com/tocy/p/learning_linux_route.html
+
+SDL_image 2.0
+http://www.libsdl.org/projects/SDL_image/
+
+How to properly use SDL_BlitSurface() with SDL_CreateRGBSurface()?
+https://stackoverflow.com/questions/9469850/how-to-properly-use-sdl-blitsurface-with-sdl-creatergbsurface
+
+  CLIP_MOUSEOVER  = 0;
+  CLIP_MOUSEOUT   = 1;
+  CLIP_MOUSEDOWN  = 2;
+  CLIP_MOUSEUP    = 3;
+
+------------------------------------------------------------------------------------------------------------
+
+
+
 
 /// OCX 传参过程
 /* 2
@@ -18,6 +75,7 @@ ManageWindows.cpp {
         pjmedia_vid_dev_cap cap,
         const void *value)
         return strm->op->set_cap(strm, cap, &p);
+    }
     }
 }
 /* 5
@@ -162,14 +220,6 @@ pjmedia_vid_port_create{
 }
 
 
-
-
-728 000
-2088
-
-728 2088
-2088
-
 PJ_DEF(pj_status_t) pjsua_vid_win_get_info( pjsua_vid_win_id wid, pjsua_vid_win_info *wi){
     pjsua_vid_win *w;
     pjmedia_vid_dev_stream *s;
@@ -233,19 +283,6 @@ PJ_DEF(pj_status_t) pjsua_vid_win_get_info( pjsua_vid_win_id wid, pjsua_vid_win_
 
     return PJ_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Internal function: update video channel after SDP negotiation.
  * Warning: do not use temporary/flip-flop pool, e.g: inv->pool_prov,
@@ -483,11 +520,6 @@ static pj_status_t  create_vid_win(){
     Line 2099:     pjmedia_vid_port_connect(w->vp_cap, w->tee, PJ_FALSE);
     Line 2106:                             call_med, w->vp_cap);
 
-
-
-192.168.1.250
-192.168.1.215
-
 //////////////////////////////////////////////////////////////////////
 pjmedia_vid_port        *vp_rend;           /**< Renderer vidport   */
 
@@ -517,9 +549,9 @@ pjsua_vid.c(2097):    14 pjmedia_vid_port_connect(w->vp_cap, w->tee, PJ_FALSE);
 ### no SDL_Button etc.
 
 1>libpjproject-i386-Win32-vc8-Debug.lib(videodev.obj) : error LNK2019: 无法解析的外部符号 _pjmedia_sdl_factory，该符号在函数 _pjmedia_vid_dev_subsys_init 中被引用
-1>Debug\FocusSipAtl.dll : fatal error LNK1120: 1 个无法解析的外部命令
+1>Debug\FocusSipAtl.dll : fatal error LNK1120: 1 个无法解析的外部命令 
 --------------------------------------------------------------------------------------------------------
-结论 : 改成cpp引起
+结论 : 改成cpp引起 
 --------------------------------------------------------------------------------------------------------
 
 >>> pjsua_core.c
@@ -580,12 +612,6 @@ sdl_dev.c(275): static pj_status_t sdl_stream_set_dir	(pjmedia_vid_dev_stream *s
 sdl_dev.c(308):    &sdl_stream_set_dir,            // O9 *set_dir
 sdl_dev.c(1851):/* API: set_dir. */			        //############################################# O9 sdl_stream_set_dir //set_dir
 sdl_dev.c(1852):static pj_status_t sdl_stream_set_dir(pjmedia_vid_dev_stream *s, const void *pval){
-
-
-640*480  480*320
-640*480  640*480
-
-
 
 /**
  * Port interface.

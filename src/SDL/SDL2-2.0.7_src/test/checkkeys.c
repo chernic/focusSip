@@ -144,7 +144,7 @@ PrintText(char *eventtype, char *text){
 
 void
 loop(){
-    SDL_Event event  = NULL;
+    SDL_Event event;
     /* Check for events */
     /*SDL_WaitEvent(&event); emscripten does not like waiting*/
 

@@ -111,10 +111,12 @@ PJ_DEF(pj_status_t) pjmedia_port_put_frame( pjmedia_port *port,
 {
     PJ_ASSERT_RETURN(port && frame, PJ_EINVAL);
 
-    if (port->put_frame)
-	return port->put_frame(port, frame);
-    else
-	return PJ_EINVALIDOP;
+	if (port->put_frame){
+		return port->put_frame(port, frame);
+	}
+	else{
+		return PJ_EINVALIDOP;
+	}
 }
 
 /**

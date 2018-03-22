@@ -25,6 +25,16 @@ interface IComponentRegistrar : IDispatch
 };
 
 [
+	object,
+	uuid(EEFB067E-AD0F-4C2C-A041-D6415891A80D),
+	dual,
+	nonextensible,
+	helpstring("IFirst 接口"),
+	pointer_default(unique)
+]
+interface IFirst : IDispatch{
+};
+[
 	uuid(968EFD2E-3217-4958-AEE2-8193D8E97E5D),
 	version(1.0),
 	helpstring("test 1.0 类型库"),
@@ -41,5 +51,13 @@ library testLib
 	coclass CompReg
 	{
 		[default] interface IComponentRegistrar;
+	};
+	[
+		uuid(BAFD69F7-D3F9-46AD-8ECF-BE16B021C80A),
+		helpstring("First Class")
+	]
+	coclass First
+	{
+		[default] interface IFirst;
 	};
 };

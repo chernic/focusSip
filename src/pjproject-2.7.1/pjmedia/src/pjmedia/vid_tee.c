@@ -357,6 +357,7 @@ static pj_status_t tee_put_frame(pjmedia_port *port, pjmedia_frame *frame)
 
             /* Deliver the data */
             pjmedia_port_put_frame(tee->dst_ports[j].dst, &framep);
+			/// ABChernic : ERROR 2018-02-07
             tee->put_frm_flag[j] = PUT_FRM_DONE;
             
             if (!tee->tee_conv[i].conv)

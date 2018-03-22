@@ -294,11 +294,9 @@ int  main(int argc, char* argv[]) {
 
   sdlR          = SDL_CreateRenderer(sdlWindow, -1, 0);
 
-  s1.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, 
-    SDL_TEXTUREACCESS_STREAMING, aTexW, aTexH);
+  s1.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, aTexW, aTexH);
 
-  s2.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, 
-    SDL_TEXTUREACCESS_STREAMING, bTexW, bTexH);
+  s2.sdlTexture = SDL_CreateTexture(sdlR, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, bTexW, bTexH);
 
   }
 
@@ -381,12 +379,12 @@ int  main(int argc, char* argv[]) {
                 }
                 // 图像二根据实际大小显示
                 if(s2.FReaded && s2.FDecoded){
-                  sws_scale(s2.img_convert_ctx, (const uint8_t* const*)s2.pFrame->data, s2.pFrame->linesize, 0,
-                  s2.pCodecCtx->height, s2.pFrameYUV->data, s2.pFrameYUV->linesize);
+                    sws_scale(s2.img_convert_ctx, (const uint8_t* const*)s2.pFrame->data, s2.pFrame->linesize, 0,
+                    s2.pCodecCtx->height, s2.pFrameYUV->data, s2.pFrameYUV->linesize);
 
-                  SDL_UpdateTexture( s2.sdlTexture, NULL, s2.pFrameYUV->data[0], s2.pFrameYUV->linesize[0] );
-                  s2.tmpTexture = s2.sdlTexture;
-                  SDL_RenderCopy( sdlR, s2.sdlTexture, NULL, &s2.sdlRect );
+                    SDL_UpdateTexture( s2.sdlTexture, NULL, s2.pFrameYUV->data[0], s2.pFrameYUV->linesize[0] );
+                    s2.tmpTexture = s2.sdlTexture;
+                    SDL_RenderCopy( sdlR, s2.sdlTexture, NULL, &s2.sdlRect );
                 }
               }
             }
